@@ -1,0 +1,30 @@
+admin@languageapp.com
+Admin123!
+
+student@languageapp.com 
+Student123!
+
+dotnet ef migrations add InitDB --project src/App.Infrastructure --startup-project src/App.API
+dotnet ef database update --project src/App.Infrastructure --startup-project src/App.API
+
+dotnet ef database update 0
+
+
+
+🔹 1️⃣ Sửa code và build lại image mớiSửa code và build lại image mới
+docker build -t tinh08042005/learninglanguage:latest .
+🔹 2️⃣ Kiểm tra lại image đã build
+docker images
+🔹 3️⃣ Push image mới lên Docker Hub
+docker login
+docker push tinh08042005/learninglanguage:latest
+
+🔹 5️⃣ (Frontend hoặc teammate) Pull image mới về
+docker pull tinh08042005/learninglanguage:latest
+
+
+docker commit sqlserver-db tinh08042005/sqlserver-db:withdata
+docker push tinh08042005/sqlserver-db:withdata
+
+docker pull tinh08042005/mydb:withdata
+docker run -d -p 1433:1433 tinh08042005/mydb:withdata
