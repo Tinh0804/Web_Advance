@@ -20,9 +20,6 @@ namespace src.API.Controllers
             _logger = logger;
         }
 
-        /// <summary>
-        /// Get exercises by lesson ID
-        /// </summary>
         [HttpGet("lesson/{lessonId}")]
         [ProducesResponseType(typeof(ApiResponse<IEnumerable<ExerciseDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetExercisesByLesson(int lessonId)
@@ -40,9 +37,6 @@ namespace src.API.Controllers
             }
         }
 
-        /// <summary>
-        /// Get exercise by ID
-        /// </summary>
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(ApiResponse<ExerciseDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -66,9 +60,6 @@ namespace src.API.Controllers
             }
         }
 
-        /// <summary>
-        /// Get next exercise in lesson
-        /// </summary>
         [HttpGet("lesson/{lessonId}/next/{currentOrderIndex}")]
         [ProducesResponseType(typeof(ApiResponse<ExerciseDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetNextExercise(int lessonId, int currentOrderIndex)
@@ -86,9 +77,6 @@ namespace src.API.Controllers
             }
         }
 
-        /// <summary>
-        /// Create new exercise
-        /// </summary>
         [HttpPost]
         [ProducesResponseType(typeof(ApiResponse<ExerciseDto>), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -115,9 +103,6 @@ namespace src.API.Controllers
             }
         }
 
-        /// <summary>
-        /// Submit exercise answer
-        /// </summary>
         [HttpPost("submit")]
         [ProducesResponseType(typeof(ApiResponse<ExerciseResultDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -143,9 +128,6 @@ namespace src.API.Controllers
             }
         }
 
-        /// <summary>
-        /// Update exercise
-        /// </summary>
         [HttpPut("{id}")]
         [ProducesResponseType(typeof(ApiResponse<bool>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -169,9 +151,6 @@ namespace src.API.Controllers
             }
         }
 
-        /// <summary>
-        /// Delete exercise
-        /// </summary>
         [HttpDelete("{id}")]
         [ProducesResponseType(typeof(ApiResponse<bool>), StatusCodes.Status200OK)]
         public async Task<IActionResult> DeleteExercise(int id)

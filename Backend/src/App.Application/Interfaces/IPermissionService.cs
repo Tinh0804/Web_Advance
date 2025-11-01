@@ -1,3 +1,4 @@
+using src.Application.DTOs;
 using src.Application.DTOs.ModelDto;
 
 namespace src.Application.Interfaces

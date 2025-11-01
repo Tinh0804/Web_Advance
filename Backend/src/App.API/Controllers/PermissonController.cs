@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using src.API.Extensions;
 using src.Application.DTOs.Response;
 using src.Domain.Entities;
+using src.Application.DTOs;
 
 namespace src.API.Controllers
 {

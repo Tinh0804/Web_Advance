@@ -4,7 +4,7 @@ using src.Domain.Enums;
 
 namespace src.Domain.Entities
 {
-    [Table("ACHIVEMENTS")]
+    [Table("ACHIEVEMENTS")]
      public class Achievement
     {
          [Key]

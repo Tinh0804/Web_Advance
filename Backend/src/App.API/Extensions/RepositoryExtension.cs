@@ -17,6 +17,7 @@ namespace src.API.Extensions
             services.AddScoped<IUserProfileRepository, UserProfileRepository>();
             services.AddScoped<IPermissionRepository, PermissionRepository>();
             services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+                 services.AddScoped<IRoleRepository, RoleRepository>();
               // Database Context
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
@@ -32,6 +33,12 @@ namespace src.API.Extensions
             services.AddScoped<IExerciseRepository, ExerciseRepository>();
             services.AddScoped<IGoalRepository, GoalRepository>();
             services.AddScoped<ILanguageRepository, LanguageRepository>();
+            services.AddScoped<ILessonRepository, LessonRepository>();
+             services.AddScoped<IUnitRepository, UnitRepository>();
+            services.AddScoped<IUserAchievementRepository, UserAchievementRepository>();
+            services.AddScoped<IUserCourseRepository, UserCourseRepository>();
+            services.AddScoped<IWordRepository, WordRepository>();
+       
 
             return services;
         }

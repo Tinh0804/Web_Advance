@@ -10,6 +10,7 @@ namespace src.Domain.Entities
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)] 
         public int WordId { get; set; }
         public int LanguageId { get; set; }
+        public int LessonId { get; set; }
         [Column("Word")]
         public string? WordName { get; set; }
         public string? Translation { get; set; }
@@ -18,8 +19,9 @@ namespace src.Domain.Entities
         public string? AudioFile { get; set; }
         public string? ImageUrl { get; set; }
         public string? ExampleSentence { get; set; }
+        
 
         public virtual Language Language { get; set; }
-        public virtual ICollection<LessonWord>? LessonWords { get; set; }
+        public virtual Lesson Lesson { get; set; }
     }
 }

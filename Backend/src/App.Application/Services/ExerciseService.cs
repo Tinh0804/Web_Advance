@@ -42,7 +42,7 @@ namespace src.Application.Services
                 Question = dto.Question,
                 AudioFile = dto.AudioFile,
                 CorrectAnswer = dto.CorrectAnswer,
-                ExperienceReward = dto.ExperienceReward
+                ExperienceReward = dto.ExperienceReward ?? 0
             };
 
             await _unitOfWork.Exercises.AddAsync(exercise);
@@ -66,7 +66,7 @@ namespace src.Application.Services
             }
 
             var isCorrect = exercise.CorrectAnswer.Trim().ToLower() == dto.UserAnswer.Trim().ToLower();
-            var expEarned = isCorrect ? (exercise.ExperienceReward ?? 0) : 0;
+            var expEarned = isCorrect ? (exercise.ExperienceReward ) : 0;
 
             // Here you would update user progress, experience, etc.
             // This requires additional logic with UserProfile repository
@@ -91,7 +91,7 @@ namespace src.Application.Services
             exercise.Question = dto.Question;
             exercise.AudioFile = dto.AudioFile;
             exercise.CorrectAnswer = dto.CorrectAnswer;
-            exercise.ExperienceReward = dto.ExperienceReward;
+            exercise.ExperienceReward = (int)dto.ExperienceReward;
 
             await _unitOfWork.Exercises.UpdateAsync(exercise);
             await _unitOfWork.SaveChangesAsync();
@@ -111,7 +111,7 @@ namespace src.Application.Services
             {
                 ExerciseId = exercise.ExerciseId,
                 LessonId = exercise.LessonId,
-                OrderIndex = exercise.OrderIndex,
+                OrderIndex = exercise.OrderIndex ?? 0,
                 ExerciseType = exercise.ExerciseType,
                 Question = exercise.Question,
                 AudioFile = exercise.AudioFile,

@@ -20,9 +20,6 @@ namespace src.API.Controllers
             _logger = logger;
         }
 
-        /// <summary>
-        /// Get user goal
-        /// </summary>
         [HttpGet("user/{userId}")]
         [ProducesResponseType(typeof(ApiResponse<GoalDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -46,9 +43,6 @@ namespace src.API.Controllers
             }
         }
 
-        /// <summary>
-        /// Create new goal
-        /// </summary>
         [HttpPost]
         [ProducesResponseType(typeof(ApiResponse<GoalDto>), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -75,9 +69,6 @@ namespace src.API.Controllers
             }
         }
 
-        /// <summary>
-        /// Update goal progress
-        /// </summary>
         [HttpPatch("progress")]
         [ProducesResponseType(typeof(ApiResponse<bool>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -101,9 +92,6 @@ namespace src.API.Controllers
             }
         }
 
-        /// <summary>
-        /// Reset daily goals (admin endpoint)
-        /// </summary>
         [HttpPost("reset-daily")]
         [ProducesResponseType(typeof(ApiResponse<bool>), StatusCodes.Status200OK)]
         public async Task<IActionResult> ResetDailyGoals()
@@ -121,9 +109,6 @@ namespace src.API.Controllers
             }
         }
 
-        /// <summary>
-        /// Delete goal
-        /// </summary>
         [HttpDelete("{id}")]
         [ProducesResponseType(typeof(ApiResponse<bool>), StatusCodes.Status200OK)]
         public async Task<IActionResult> DeleteGoal(int id)

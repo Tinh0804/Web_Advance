@@ -16,6 +16,7 @@ namespace src.Domain.Entities
         public int? TotalExperienceEarned { get; set; }
         public bool IsCompleted { get; set; } = false;
 
+        [ForeignKey("UserId")]
         public virtual UserProfile UserProfile { get; set; }
         public virtual Course Course { get; set; }
         public virtual Unit? CurrentUnit { get; set; }

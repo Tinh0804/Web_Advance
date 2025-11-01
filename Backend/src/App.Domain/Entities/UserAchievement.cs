@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace src.Domain.Entities
 {
-    [Table("USER_ACHIEMENTS")]
+    [Table("USER_ACHIEVEMENTS")]
     public class UserAchievement
     {
         [Key]
@@ -13,7 +13,10 @@ namespace src.Domain.Entities
         public int AchievementId { get; set; }
         public DateTime DateEarned { get; set; } = DateTime.UtcNow;
 
+         [ForeignKey("UserId")]
         public virtual UserProfile UserProfile { get; set; }
+
+         [ForeignKey("AchievementId")]
         public virtual Achievement Achievement { get; set; }
     }
 }

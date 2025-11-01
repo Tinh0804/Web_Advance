@@ -426,21 +426,21 @@ namespace App.Infrastructure.Migrations
 
             
 
-            modelBuilder.Entity("src.Domain.Entities.UserProfile", b =>
-                {
-                    b.HasOne("src.Domain.Entities.Language", "NativeLanguage")
-                        .WithMany("UserProfiles")
-                        .HasForeignKey("NativeLanguageId");
+            // modelBuilder.Entity("src.Domain.Entities.UserProfile", b =>
+            //     {
+            //         b.HasOne("src.Domain.Entities.Language", "NativeLanguage")
+            //             .WithMany("UserProfiles")
+            //             .HasForeignKey("NativeLanguageId");
 
-                    b.HasOne("src.Domain.Entities.UserAccount", "UserAccount")
-                        .WithOne("Profile")
-                        .HasForeignKey("src.Domain.Entities.UserProfile", "UserAccountId")
-                        .OnDelete(DeleteBehavior.Cascade);
+            //         b.HasOne("src.Domain.Entities.UserAccount", "UserAccount")
+            //             .WithOne("Profile")
+            //             .HasForeignKey("src.Domain.Entities.UserProfile", "UserAccountId")
+            //             .OnDelete(DeleteBehavior.Cascade);
 
-                    b.Navigation("NativeLanguage");
+            //         b.Navigation("NativeLanguage");
 
-                    b.Navigation("UserAccount");
-                });
+            //         b.Navigation("UserAccount");
+            //     });
 
             
 #pragma warning restore 612, 618

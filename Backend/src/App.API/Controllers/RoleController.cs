@@ -22,7 +22,7 @@ namespace src.API.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = $"{SystemRoles.Admin},{SystemRoles.Admin}")]
+        [Authorize(Roles = $"{SystemRoles.Admin}")]
         public async Task<IActionResult> GetAllRoles()
         {
             var roles = await _roleService.GetAllRolesAsync();
@@ -30,7 +30,7 @@ namespace src.API.Controllers
         }
 
         [HttpGet("{roleId}")]
-        [Authorize(Roles = $"{SystemRoles.Admin},{SystemRoles.Admin}")]
+        [Authorize(Roles = $"{SystemRoles.Admin}")]
         public async Task<IActionResult> GetRole(string roleId)
         {
             var role = await _roleService.GetRoleByIdAsync(roleId);
@@ -63,11 +63,11 @@ namespace src.API.Controllers
             try
             {
                 var role = await _roleService.UpdateRoleAsync(roleId, updateRoleDto);
-                return Ok(role);
+                return Ok(ApiResponse<RoleDto>.SuccessResponse(role));
             }
             catch (Exception ex)
             {
-                return BadRequest(new { message = ex.Message });
+                return BadRequest(ApiResponse<string>.ErrorResponse(ex.Message));
             }
         }
 
@@ -78,11 +78,11 @@ namespace src.API.Controllers
             try
             {
                 await _roleService.DeleteRoleAsync(roleId);
-                return NoContent();
+                return Ok(ApiResponse<string>.SuccessResponse("Delete role success"));;
             }
             catch (Exception ex)
             {
-                return BadRequest(new { message = ex.Message });
+                 return BadRequest(ApiResponse<string>.ErrorResponse(ex.Message));
             }
         }
 
@@ -92,9 +92,9 @@ namespace src.API.Controllers
         {
             var success = await _roleService.AssignRolesToUserAsync(assignRoleDto.UserId, assignRoleDto.RoleIds);
             if (!success)
-                return BadRequest(new { message = "Failed to assign roles" });
+                 return BadRequest(ApiResponse<string>.ErrorResponse( "Failed to assign roles"));
 
-            return Ok(new { message = "Roles assigned successfully" });
+            return Ok(ApiResponse<string>.SuccessResponse("Roles assigned successfully" ));;
         }
     }
 }

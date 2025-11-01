@@ -1,3 +1,4 @@
+using src.Application.DTOs;
 using src.Application.DTOs.ModelDto;
 using src.Domain.Entities;
 

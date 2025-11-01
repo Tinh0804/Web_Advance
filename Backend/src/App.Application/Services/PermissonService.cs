@@ -1,5 +1,6 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using src.Application.DTOs;
 using src.Application.DTOs.ModelDto;
 using src.Application.Interfaces;
 using src.Domain.Entities;

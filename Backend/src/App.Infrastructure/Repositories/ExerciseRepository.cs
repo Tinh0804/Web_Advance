@@ -36,7 +36,7 @@ namespace src.Infrastructure.Repositories
         {
             return await _dbSet
                 .Where(e => e.LessonId == lessonId)
-                .SumAsync(e => e.ExperienceReward ?? 0);
+                .SumAsync(e => e.ExperienceReward);
         }
     }
 }

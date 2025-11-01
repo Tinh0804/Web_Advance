@@ -1,4 +1,4 @@
-namespace src.Application.DTOs.ModelDto
+namespace src.Application.DTOs
 {
     public class PermissionDto
     {

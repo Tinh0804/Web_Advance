@@ -68,12 +68,6 @@ builder.Services.AddAutoMapper(typeof(MappingProfile));
 // Caching
 builder.Services.AddMemoryCache();
 
-// CORS
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowAll", policy =>
-        policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
-});
 
 // Controllers
 builder.Services.AddControllers().AddJsonOptions(options =>
@@ -87,17 +81,12 @@ builder.Logging.AddConsole();
 builder.Logging.AddDebug();
 
 // ✅ Extension methods
+builder.Services.AddApiServices();
 builder.Services.AddRepositories(builder.Configuration);
 builder.Services.AddApplicationServices();
 builder.Services.AddBackgroundServices();
 builder.Services.AddHttpClient<IExternalAuthService, ExternalAuthService>();
 
-// Swagger
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c =>
-{
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
-});
 
 var app = builder.Build();
 

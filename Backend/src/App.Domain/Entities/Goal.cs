@@ -14,6 +14,7 @@ namespace src.Domain.Entities
         public int CurrentValue { get; set; } = 0;
         public DateTime? ResetDate { get; set; } 
         
+        [ForeignKey("UserId")]
         public virtual UserProfile UserProfile { get; set; }
     }
 }

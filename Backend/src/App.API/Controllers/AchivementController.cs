@@ -20,9 +20,6 @@ namespace src.API.Controllers
             _logger = logger;
         }
 
-        /// <summary>
-        /// Get all achievements
-        /// </summary>
         [HttpGet]
         [ProducesResponseType(typeof(ApiResponse<IEnumerable<AchievementDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAllAchievements()
@@ -41,9 +38,6 @@ namespace src.API.Controllers
             }
         }
 
-        /// <summary>
-        /// Get achievement by ID
-        /// </summary>
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(ApiResponse<AchievementDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -67,9 +61,6 @@ namespace src.API.Controllers
             }
         }
 
-        /// <summary>
-        /// Get achievements by type
-        /// </summary>
         [HttpGet("type/{type}")]
         [ProducesResponseType(typeof(ApiResponse<IEnumerable<AchievementDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAchievementsByType(string type)
@@ -87,9 +78,6 @@ namespace src.API.Controllers
             }
         }
 
-        /// <summary>
-        /// Get user achievements
-        /// </summary>
         [HttpGet("user/{userId}")]
         [ProducesResponseType(typeof(ApiResponse<IEnumerable<AchievementDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetUserAchievements(int userId)
@@ -107,9 +95,6 @@ namespace src.API.Controllers
             }
         }
 
-        /// <summary>
-        /// Create new achievement
-        /// </summary>
         [HttpPost]
         [ProducesResponseType(typeof(ApiResponse<AchievementDto>), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -136,9 +121,6 @@ namespace src.API.Controllers
             }
         }
 
-        /// <summary>
-        /// Delete achievement
-        /// </summary>
         [HttpDelete("{id}")]
         [ProducesResponseType(typeof(ApiResponse<bool>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

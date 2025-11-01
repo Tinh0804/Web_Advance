@@ -1,3 +1,4 @@
+using src.Application.DTOs;
 using src.Application.DTOs.ModelDto;
 
 namespace src.Application.Interfaces
@@ -10,7 +11,8 @@ namespace src.Application.Interfaces
         Task<RoleDto> UpdateRoleAsync(string roleId, UpdateRoleDto updateRoleDto);
         Task DeleteRoleAsync(string roleId);
         Task<bool> AssignRolesToUserAsync(string userId, List<string> roleIds);
-        Task<List<string>> GetUserRolesAsync(string userId);
-        Task<List<string>> GetUserPermissionsAsync(string userId);
+        Task<List<PermissionDto>> GetRolePermissionsAsync(string roleId);
+        Task<bool> AssignPermissionsToRoleAsync(string roleId, List<int> permissionIds);
+        Task<bool> RemovePermissionsFromRoleAsync(string roleId, List<int> permissionIds);
     }
 }

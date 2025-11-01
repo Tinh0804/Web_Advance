@@ -5,6 +5,9 @@ student@languageapp.com
 Student123!
 
 dotnet ef migrations add InitDB --project src/App.Infrastructure --startup-project src/App.API
+
+dotnet ef migrations add Update1 --project src/App.Infrastructure --startup-project src/App.API --ignore-changes
+
 dotnet ef database update --project src/App.Infrastructure --startup-project src/App.API
 
 dotnet ef database update 0

@@ -222,7 +222,7 @@ namespace App.Infrastructure.Migrations
                     principalColumn: "Id",
                     onDelete: ReferentialAction.Cascade);
 
-            
+
 
             migrationBuilder.CreateTable(
                 name: "RolePermissions",
@@ -249,6 +249,96 @@ namespace App.Infrastructure.Migrations
                         principalColumn: "PermissionId",
                         onDelete: ReferentialAction.Cascade);
                 });
+                
+            // // USERS table
+            // migrationBuilder.RenameTable(name: "UserProfile", newName: "USERS");
+            // migrationBuilder.RenameColumn(name: "UserAccountId", table: "USERS", newName: "accountId");
+            // migrationBuilder.RenameColumn(name: "NativeLanguageId", table: "USERS", newName: "nativeLanguageId");
+
+            // migrationBuilder.AddColumn<int>(
+            //     name: "userId",
+            //     table: "USERS",
+            //     type: "int",
+            //     nullable: false,
+            //     defaultValue: 0)
+            //     .Annotation("SqlServer:Identity", "1, 1");
+
+            // migrationBuilder.AddColumn<string>("phoneNumber", "USERS", "nvarchar(15)", nullable: true);
+            // migrationBuilder.AddColumn<string>("fullName", "USERS", "nvarchar(100)", nullable: true);
+            // migrationBuilder.AddColumn<DateTime?>("dateOfBirth", "USERS", "datetime2", nullable: true);
+            // migrationBuilder.AddColumn<int>("totalExperience", "USERS", "int", nullable: false, defaultValue: 0);
+            // migrationBuilder.AddColumn<int>("currentStreak", "USERS", "int", nullable: false, defaultValue: 0);
+            // migrationBuilder.AddColumn<int>("longestStreak", "USERS", "int", nullable: false, defaultValue: 0);
+            // migrationBuilder.AddColumn<int>("hearts", "USERS", "int", nullable: false, defaultValue: 5);
+            // migrationBuilder.AddColumn<string>("subscriptionType", "USERS", "nvarchar(10)", nullable: false, defaultValue: "free");
+            // migrationBuilder.AddColumn<string>("avatar", "USERS", "nvarchar(max)", nullable: true);
+
+            // migrationBuilder.AddPrimaryKey("PK_USERS", "USERS", "userId");
+
+            // // LANGUAGES table
+            // migrationBuilder.RenameTable(name: "Language", newName: "LANGUAGES");
+            // migrationBuilder.RenameColumn(name: "TempId", table: "LANGUAGES", newName: "LanguageId");
+
+            // migrationBuilder.AddColumn<string>("LanguageName", "LANGUAGES", "nvarchar(50)", nullable: false, defaultValue: "");
+            // migrationBuilder.AddColumn<string>("LanguageCode", "LANGUAGES", "nvarchar(5)", nullable: false, defaultValue: "");
+            // migrationBuilder.AddColumn<string>("FlagIcon", "LANGUAGES", "nvarchar(255)", nullable: true);
+            // migrationBuilder.AddColumn<bool>("IsSupported", "LANGUAGES", "bit", nullable: false, defaultValue: true);
+
+            // migrationBuilder.AddPrimaryKey("PK_LANGUAGES", "LANGUAGES", "LanguageId");
+
+            // // COURSES table
+            // migrationBuilder.CreateTable(
+            //     name: "COURSES",
+            //     columns: table => new
+            //     {
+            //         CourseId = table.Column<int>(type: "int", nullable: false)
+            //             .Annotation("SqlServer:Identity", "1, 1"),
+            //         CourseName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+            //         FromLanguageId = table.Column<int>(type: "int", nullable: false),
+            //         ToLanguageId = table.Column<int>(type: "int", nullable: false),
+            //         DifficultyLevel = table.Column<string>(type: "nvarchar(20)", nullable: false, defaultValue: "beginner"),
+            //         CourseIcon = table.Column<string>(type: "nvarchar(255)", nullable: true)
+            //     },
+            //     constraints: table =>
+            //     {
+            //         table.PrimaryKey("PK_COURSES", x => x.CourseId);
+            //         table.ForeignKey(
+            //             name: "FK_COURSES_LANGUAGES_FromLanguageId",
+            //             column: x => x.FromLanguageId,
+            //             principalTable: "LANGUAGES",
+            //             principalColumn: "LanguageId",
+            //             onDelete: ReferentialAction.Restrict);
+            //         table.ForeignKey(
+            //             name: "FK_COURSES_LANGUAGES_ToLanguageId",
+            //             column: x => x.ToLanguageId,
+            //             principalTable: "LANGUAGES",
+            //             principalColumn: "LanguageId",
+            //             onDelete: ReferentialAction.Restrict);
+            //     });
+
+            // // Indexes
+            // migrationBuilder.CreateIndex("IX_USERS_accountId", "USERS", "accountId", unique: true);
+            // migrationBuilder.CreateIndex("IX_USERS_nativeLanguageId", "USERS", "nativeLanguageId");
+
+            // migrationBuilder.CreateIndex("IX_COURSES_FromLanguageId", "COURSES", "FromLanguageId");
+            // migrationBuilder.CreateIndex("IX_COURSES_ToLanguageId", "COURSES", "ToLanguageId");
+
+            // // FK
+            // migrationBuilder.AddForeignKey(
+            //     name: "FK_USERS_LANGUAGES_nativeLanguageId",
+            //     table: "USERS",
+            //     column: "nativeLanguageId",
+            //     principalTable: "LANGUAGES",
+            //     principalColumn: "LanguageId");
+
+            // migrationBuilder.AddForeignKey(
+            //     name: "FK_USERS_AspNetUsers_accountId",
+            //     table: "USERS",
+            //     column: "accountId",
+            //     principalTable: "AspNetUsers",
+            //     principalColumn: "Id",
+            //     onDelete: ReferentialAction.Cascade);
+        
 
            
 
@@ -309,7 +399,7 @@ namespace App.Infrastructure.Migrations
                 table: "RolePermissions",
                 column: "PermissionId");
 
-            
+
 
             migrationBuilder.CreateIndex(
                 name: "IX_USERS_accountId",
@@ -318,6 +408,7 @@ namespace App.Infrastructure.Migrations
                 unique: true,
                 filter: "[accountId] IS NOT NULL");
 
+            
             
         }
 
@@ -364,10 +455,12 @@ namespace App.Infrastructure.Migrations
             migrationBuilder.DropTable(
                 name: "USERS");
 
-            
+
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+                
+            
 
            
         }

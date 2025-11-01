@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using src.API.Attributes;
 using src.API.Extensions;
+using src.Application.DTOs;
 using src.Application.DTOs.ModelDto;
 using src.Application.DTOs.Request;
 using src.Application.DTOs.Response;

@@ -20,9 +20,6 @@ namespace src.API.Controllers
             _logger = logger;
         }
 
-        /// <summary>
-        /// Get all languages
-        /// </summary>
         [HttpGet]
         [ProducesResponseType(typeof(ApiResponse<IEnumerable<LanguageDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAllLanguages()
@@ -41,9 +38,6 @@ namespace src.API.Controllers
             }
         }
 
-        /// <summary>
-        /// Get supported languages only
-        /// </summary>
         [HttpGet("supported")]
         [ProducesResponseType(typeof(ApiResponse<IEnumerable<LanguageDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSupportedLanguages()
@@ -61,9 +55,6 @@ namespace src.API.Controllers
             }
         }
 
-        /// <summary>
-        /// Get popular languages
-        /// </summary>
         [HttpGet("popular")]
         [ProducesResponseType(typeof(ApiResponse<IEnumerable<LanguageDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetPopularLanguages([FromQuery] int count = 10)
@@ -81,9 +72,6 @@ namespace src.API.Controllers
             }
         }
 
-        /// <summary>
-        /// Get language by ID
-        /// </summary>
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(ApiResponse<LanguageDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -106,10 +94,6 @@ namespace src.API.Controllers
                     "An error occurred while retrieving the language"));
             }
         }
-
-        /// <summary>
-        /// Get language by code
-        /// </summary>
         [HttpGet("code/{code}")]
         [ProducesResponseType(typeof(ApiResponse<LanguageDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -133,9 +117,6 @@ namespace src.API.Controllers
             }
         }
 
-        /// <summary>
-        /// Create new language
-        /// </summary>
         [HttpPost]
         [ProducesResponseType(typeof(ApiResponse<LanguageDto>), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -162,9 +143,6 @@ namespace src.API.Controllers
             }
         }
 
-        /// <summary>
-        /// Update language
-        /// </summary>
         [HttpPut("{id}")]
         [ProducesResponseType(typeof(ApiResponse<bool>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -188,9 +166,6 @@ namespace src.API.Controllers
             }
         }
 
-        /// <summary>
-        /// Delete language
-        /// </summary>
         [HttpDelete("{id}")]
         [ProducesResponseType(typeof(ApiResponse<bool>), StatusCodes.Status200OK)]
         public async Task<IActionResult> DeleteLanguage(int id)

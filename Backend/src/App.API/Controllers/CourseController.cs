@@ -20,9 +20,7 @@ namespace src.API.Controllers
             _logger = logger;
         }
 
-        /// <summary>
-        /// Get all courses
-        /// </summary>
+
         [HttpGet]
         [ProducesResponseType(typeof(ApiResponse<IEnumerable<CourseDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAllCourses()
@@ -41,9 +39,6 @@ namespace src.API.Controllers
             }
         }
 
-        /// <summary>
-        /// Get course by ID
-        /// </summary>
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(ApiResponse<CourseDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -67,9 +62,6 @@ namespace src.API.Controllers
             }
         }
 
-        /// <summary>
-        /// Get courses by language pair
-        /// </summary>
         [HttpGet("languages/{fromLanguageId}/{toLanguageId}")]
         [ProducesResponseType(typeof(ApiResponse<IEnumerable<CourseDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetCoursesByLanguagePair(int fromLanguageId, int toLanguageId)
@@ -88,9 +80,6 @@ namespace src.API.Controllers
             }
         }
 
-        /// <summary>
-        /// Get user courses
-        /// </summary>
         [HttpGet("user/{userId}")]
         [ProducesResponseType(typeof(ApiResponse<IEnumerable<CourseDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetUserCourses(int userId)
@@ -108,9 +97,6 @@ namespace src.API.Controllers
             }
         }
 
-        /// <summary>
-        /// Create new course
-        /// </summary>
         [HttpPost]
         [ProducesResponseType(typeof(ApiResponse<CourseDto>), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -137,9 +123,6 @@ namespace src.API.Controllers
             }
         }
 
-        /// <summary>
-        /// Enroll user in course
-        /// </summary>
         [HttpPost("enroll")]
         [ProducesResponseType(typeof(ApiResponse<bool>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -164,9 +147,6 @@ namespace src.API.Controllers
             }
         }
 
-        /// <summary>
-        /// Update course
-        /// </summary>
         [HttpPut("{id}")]
         [ProducesResponseType(typeof(ApiResponse<bool>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -190,9 +170,7 @@ namespace src.API.Controllers
             }
         }
 
-        /// <summary>
-        /// Delete course
-        /// </summary>
+
         [HttpDelete("{id}")]
         [ProducesResponseType(typeof(ApiResponse<bool>), StatusCodes.Status200OK)]
         public async Task<IActionResult> DeleteCourse(int id)

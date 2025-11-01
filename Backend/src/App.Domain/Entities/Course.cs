@@ -1,5 +1,7 @@
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using src.Domain.Enums;
 
 namespace src.Domain.Entities
 {
@@ -9,21 +11,27 @@ namespace src.Domain.Entities
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int CourseId { get; set; }
-        public string? CourseName { get; set; }
 
-        [ForeignKey(nameof(FromLanguage))]
+        [Required]
+        [StringLength(100)]
+        public string CourseName { get; set; } = null!;
+
         public int FromLanguageId { get; set; }
 
-        [ForeignKey(nameof(ToLanguage))]
         public int ToLanguageId { get; set; }
 
-        public string DifficultyLevel { get; set; } = "beginner";
+        [Required]
+        public string DifficultyLevel { get; set; } = DifficultyLevels.Beginner;
+
+        [StringLength(255)]
         public string? CourseIcon { get; set; }
 
-        // Navigation
+        [ForeignKey(nameof(FromLanguageId))]
         public virtual Language FromLanguage { get; set; } = null!;
+        
+          [ForeignKey(nameof(ToLanguageId))]
         public virtual Language ToLanguage { get; set; } = null!;
-        public virtual ICollection<Unit>? Units { get; set; }
-        public virtual ICollection<UserCourse>? UserCourses { get; set; }
+        public virtual ICollection<Unit> Units { get; set; } = new HashSet<Unit>();
+        public virtual ICollection<UserCourse> UserCourses { get; set; } = new HashSet<UserCourse>();
     }
 }

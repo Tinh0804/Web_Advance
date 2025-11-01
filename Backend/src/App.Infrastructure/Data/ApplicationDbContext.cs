@@ -20,7 +20,6 @@ namespace src.Infrastructure.Data
         public DbSet<Exercise> Exercises { get; set; }
 
         public DbSet<Word> Words { get; set; }
-        public DbSet<LessonWord> LessonWords { get; set; }
         public DbSet<UserCourse> UserCourses { get; set; }
 
         public DbSet<Achievement> Achievements { get; set; }
@@ -40,19 +39,20 @@ namespace src.Infrastructure.Data
             // Unique constraints
             modelBuilder.Entity<UserCourse>().HasIndex(x => new { x.UserId, x.CourseId }).IsUnique();
             modelBuilder.Entity<UserAchievement>().HasIndex(x => new { x.UserId, x.AchievementId }).IsUnique();
-            modelBuilder.Entity<LessonWord>().HasIndex(x => new { x.LessonId, x.WordId }).IsUnique();
 
+            
             modelBuilder.Entity<Course>()
                 .HasOne(c => c.FromLanguage)
-                .WithMany()
+                .WithMany(l => l.FromCourses)
                 .HasForeignKey(c => c.FromLanguageId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Course>()
                 .HasOne(c => c.ToLanguage)
-                .WithMany()
+                .WithMany(l => l.ToCourses)
                 .HasForeignKey(c => c.ToLanguageId)
                 .OnDelete(DeleteBehavior.Restrict);
+                
 
 
            modelBuilder.Entity<UserProfile>()

@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using src.Application.DTOs;
 using src.Application.DTOs.ModelDto;
 using src.Application.Interfaces;
 using src.Domain.Entities;
