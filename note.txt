@@ -26,8 +26,8 @@ docker push tinh08042005/learninglanguage:latest
 docker pull tinh08042005/learninglanguage:latest
 
 
-docker commit sqlserver-db tinh08042005/sqlserver-db:withdata
-docker push tinh08042005/sqlserver-db:withdata
+docker commit sqlserver-db tinh08042005/learninglanguage-db:withdata
+docker push tinh08042005/learninglanguage-db:withdata
 
-docker pull tinh08042005/mydb:withdata
-docker run -d -p 1433:1433 tinh08042005/mydb:withdata
+docker pull tinh08042005/learninglanguage-db:withdata
+docker run -d -p 1433:1433 tinh08042005/learninglanguage-db:withdata
