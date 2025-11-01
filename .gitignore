@@ -426,3 +426,6 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+
+# Firebase credentials
+Backend/src/App.Infrastructure/Configs/firebase-adminsdk.json
