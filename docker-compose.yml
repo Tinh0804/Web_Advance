@@ -3,14 +3,19 @@ version: "3.9"
 services:
   db:
     image: tinh08042005/learninglanguage-db:withdata
+    platform: linux/amd64
     container_name: sqlserver-db
     ports:
       - "1433:1433"
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P '@Tinh0804' -Q 'SELECT 1' || exit 1"]
+      interval: 10s
+      retries: 10
     environment:
       SA_PASSWORD: "@Tinh0804"
       ACCEPT_EULA: "Y"
     volumes:
-      - sql_data:/var/opt/mssql
+      - nhom_sql_data:/var/opt/mssql 
     networks:
       - appnet
 
@@ -27,6 +32,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__DefaultConnection=Server=db;Database=AppLearning;User Id=sa;Password=@Tinh0804;MultipleActiveResultSets=true;TrustServerCertificate=True
+
     networks:
       - appnet
 
@@ -35,4 +41,6 @@ networks:
     driver: bridge
 
 volumes:
-  sql_data:
+  nhom_sql_data:
+    external: true
+    name: nhom_sql_data

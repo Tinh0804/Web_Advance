@@ -359,14 +359,14 @@ namespace App.Infrastructure.Migrations
                     b.HasKey("UserId");
 
 
-                    b.HasIndex("UserAccountId")
-                        .IsUnique();
+                    // b.HasIndex("UserAccountId")
+                    //     .IsUnique();
 
                     b.HasOne("src.Domain.Entities.UserAccount", "UserAccount")
- .WithOne("Profile")
- .HasForeignKey("src.Domain.Entities.UserProfile", "UserAccountId")
- .OnDelete(DeleteBehavior.Cascade)
- .IsRequired();
+                    .WithOne("Profile")
+                    .HasForeignKey("src.Domain.Entities.UserProfile", "UserAccountId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
 
                 });
                 

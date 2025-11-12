@@ -405,7 +405,7 @@ namespace App.Infrastructure.Migrations
                 name: "IX_USERS_accountId",
                 table: "USERS",
                 column: "accountId",
-                unique: true,
+                // unique: true,
                 filter: "[accountId] IS NOT NULL");
 
             

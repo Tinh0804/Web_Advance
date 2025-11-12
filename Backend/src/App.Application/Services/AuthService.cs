@@ -70,6 +70,7 @@ namespace src.Application.Services
             {
                 FullName = registerDto.FullName,
                 NativeLanguageId = registerDto.NativeLanguagueId,
+                PhoneNumber = registerDto.PhoneNumber,
                 // Avatar = string.Empty,
                 UserAccountId = user.Id,
 
@@ -113,75 +114,85 @@ namespace src.Application.Services
         }
 
       public async Task<AuthResponse> ExternalLoginAsync(ExternalLoginRequest request)
+    {
+       ExternalUserInfoDto externalUserInfo;
+
+        switch (request.Provider)
         {
-          
-            var externalUserInfo = await _externalAuthService.ValidateGoogleTokenAsync(request.AccessToken);
+            case "Google":
+                externalUserInfo = await _externalAuthService.ValidateGoogleTokenAsync(request.AccessToken);
+                break;
 
-            if (externalUserInfo == null)
-                throw new UnauthorizedAccessException("Invalid external token");
+            case "Facebook":
+                externalUserInfo = await _externalAuthService.ValidateFacebookTokenAsync(request.AccessToken);
+                break;
 
-            // 2️⃣ Kiểm tra xem user đã từng đăng nhập bằng provider này chưa
-            var user = await _userManager.FindByLoginAsync(externalUserInfo.Provider, externalUserInfo.ProviderKey);
+            default:
+                throw new InvalidOperationException($"Unsupported external provider: {request.Provider}");
+        }
 
-            // 3️⃣ Nếu chưa có liên kết login, kiểm tra user theo email
-            if (user == null)
+        if (externalUserInfo == null)
+            throw new UnauthorizedAccessException("Invalid external token");
+
+        // 2️⃣ Tìm user theo provider hoặc email
+        var user = await _userManager.FindByLoginAsync(externalUserInfo.Provider, externalUserInfo.ProviderKey)
+                ?? await _userManager.FindByEmailAsync(externalUserInfo.Email);
+
+        // 3️⃣ Nếu chưa có user → tạo mới
+        if (user == null)
+        {
+            user = new UserAccount
             {
-                user = await _userManager.FindByEmailAsync(externalUserInfo.Email);
+                Id = Guid.NewGuid().ToString(),
+                UserName = externalUserInfo.Email ?? $"{externalUserInfo.ProviderKey}@{externalUserInfo.Provider}.local",
+                Email = externalUserInfo.Email,
+                EmailConfirmed = true, // ✅ Facebook & Google đã xác thực email
+                CreatedAt = DateTime.UtcNow
+            };
 
-                // 4️⃣ Nếu user hoàn toàn mới → tạo tài khoản mới
-                if (user == null)
-                {
-                    user = new UserAccount
-                    {
-                        Id = Guid.NewGuid().ToString(), 
-                        UserName = externalUserInfo.Email,
-                        Email = externalUserInfo.Email,
-                        EmailConfirmed = false,
-                        CreatedAt = DateTime.UtcNow
-                    };
-
-                    var createResult = await _userManager.CreateAsync(user);
-                    if (!createResult.Succeeded)
-                    {
-                        var errors = string.Join(", ", createResult.Errors.Select(e => e.Description));
-                        throw new InvalidOperationException($"User creation failed: {errors}");
-                    }
-
-                    // Gán role mặc định
-                    await _userManager.AddToRoleAsync(user, SystemRoles.Student);
-
-                    // Tạo profile cơ bản
-                    var profile = new UserProfile
-                    {
-                        UserAccountId = user.Id,
-                        FullName = externalUserInfo.FullName ?? externalUserInfo.Email,
-                        Avatar = externalUserInfo.Avatar 
-                    };
-                    await _userProfileRepository.AddAsync(profile);
-                }
-
-                // 5️⃣ Liên kết external login (Google/Facebook) với user
-                var loginInfo = new UserLoginInfo(
-                    externalUserInfo.Provider,
-                    externalUserInfo.ProviderKey,
-                    externalUserInfo.Provider);
-
-                await _userManager.AddLoginAsync(user, loginInfo);
+            var createResult = await _userManager.CreateAsync(user);
+            if (!createResult.Succeeded)
+            {
+                var errors = string.Join(", ", createResult.Errors.Select(e => e.Description));
+                throw new InvalidOperationException($"User creation failed: {errors}");
             }
 
-            // 6️⃣ Tạo JWT + Refresh token
-            var jwtToken = await _tokenService.GenerateJwtTokenAsync(user.Id);
-            var refreshToken = await _tokenService.CreateRefreshTokenAsync(user.Id);
-            await _refreshTokenRepository.AddAsync(refreshToken);
+            await _userManager.AddToRoleAsync(user, SystemRoles.Student);
 
-            // 7️⃣ Trả về response
-            return new AuthResponse
+            await _userProfileRepository.AddAsync(new UserProfile
             {
-                Token = jwtToken,
-                RefreshToken = refreshToken.Token,
-                User = _mapper.Map<UserDto>(user)
-            };
+                UserAccountId = user.Id,
+                FullName = externalUserInfo.FullName ?? user.Email,
+                Avatar = externalUserInfo.Avatar
+            });
         }
+
+        // 4️⃣ Gắn external login
+        var loginInfo = new UserLoginInfo(
+            externalUserInfo.Provider,
+            externalUserInfo.ProviderKey,
+            externalUserInfo.Provider);
+
+        var existingLogins = await _userManager.GetLoginsAsync(user);
+        if (!existingLogins.Any(l => l.LoginProvider == externalUserInfo.Provider && l.ProviderKey == externalUserInfo.ProviderKey))
+        {
+            await _userManager.AddLoginAsync(user, loginInfo);
+        }
+
+        // 5️⃣ Sinh JWT và refresh token
+        var jwtToken = await _tokenService.GenerateJwtTokenAsync(user.Id);
+        var refreshToken = await _tokenService.CreateRefreshTokenAsync(user.Id);
+        await _refreshTokenRepository.AddAsync(refreshToken);
+
+        // 6️⃣ Trả về kết quả
+        return new AuthResponse
+        {
+            Token = jwtToken,
+            RefreshToken = refreshToken.Token,
+            User = _mapper.Map<UserDto>(user)
+        };
+    }
+
 
 
     }

@@ -9,6 +9,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using src.API.Extensions;
 using src.API.Middleware;
+using src.Application.DTOs;
 using src.Application.Interfaces;
 using src.Application.Mappings;
 using src.Domain.Entities;
@@ -16,6 +17,10 @@ using src.Infrastructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// builder.WebHost.ConfigureKestrel(options =>
+// {
+//     options.ListenAnyIP(8080); // Lắng nghe trên tất cả IP với port 8080
+// });
 // Add services to the container.
 builder.Services.AddScoped<TransactionFilter>();
 
@@ -81,6 +86,8 @@ builder.Logging.AddConsole();
 builder.Logging.AddDebug();
 
 // ✅ Extension methods
+builder.Services.Configure<MomoOptionModel>(builder.Configuration.GetSection("MomoAPI"));
+
 builder.Services.AddApiServices();
 builder.Services.AddRepositories(builder.Configuration);
 builder.Services.AddApplicationServices();

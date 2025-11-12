@@ -5,6 +5,7 @@ using src.Domain.Interfaces;
 using src.Infrastructure.Repositories;
 using src.Application.Services;
 using src.Application.Interfaces.Services;
+using src.Application.DTOs;
 
 namespace src.API.Extensions
 {
@@ -26,11 +27,15 @@ namespace src.API.Extensions
             services.AddScoped<IGoalService, GoalService>();
             services.AddScoped<ILanguageService, LanguageService>();
             services.AddScoped<ILessonService, LessonService>();
-             services.AddScoped<IUnitService, UnitService>();
+            services.AddScoped<IUnitService, UnitService>();
             services.AddScoped<IUserAchievementService, UserAchievementService>();
             services.AddScoped<IUserCourseService, UserCourseService>();
             services.AddScoped<IWordService, WordService>();
 
+
+            services.AddScoped<IVnPayService, VNPayService>();
+            // services.Configure<MomoOptionModel>(builder.Configuration.GetSection("MomoAPI"));
+            services.AddScoped<IMomoService, MomoService>();
 
 
             

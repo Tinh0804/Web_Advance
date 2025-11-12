@@ -429,3 +429,4 @@ FodyWeavers.xsd
 
 # Firebase credentials
 Backend/src/App.Infrastructure/Configs/firebase-adminsdk.json
+Backend/src/App.API/key.txt
