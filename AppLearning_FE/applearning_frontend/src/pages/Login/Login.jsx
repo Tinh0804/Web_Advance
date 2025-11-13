@@ -16,6 +16,8 @@ export default function Login() {
     fieldErrors: {},
   });
 
+  const [isFacebookReady, setIsFacebookReady] = useState(false);
+
   // Load Google SDK
   useEffect(() => {
     const loadGoogleScript = () => {
@@ -39,29 +41,51 @@ export default function Login() {
     loadGoogleScript();
   }, []);
 
-  // Load Facebook SDK
+  // Load Facebook SDK (chỉ sửa phần này)
   useEffect(() => {
-    const loadFacebookSDK = () => {
-      window.fbAsyncInit = function() {
+    // nếu đã có script thì đánh dấu ready (tránh load lại)
+    if (document.getElementById('facebook-jssdk')) {
+      // nếu FB đã init thì set ready ngay, còn chưa thì fbAsyncInit sẽ set
+      if (window.FB && window.FB.getLoginStatus) {
+        setIsFacebookReady(true);
+      }
+      return;
+    }
+
+    // tạo fb-root nếu chưa có
+    if (!document.getElementById('fb-root')) {
+      const fbRoot = document.createElement('div');
+      fbRoot.id = 'fb-root';
+      document.body.appendChild(fbRoot);
+    }
+
+    // hàm init của FB SDK
+    window.fbAsyncInit = function() {
+      try {
         window.FB.init({
           appId: OAUTH_CONFIG.FACEBOOK.APP_ID,
           cookie: true,
-          xfbml: true,
+          xfbml: false, // không cần auto render XFBML ở đây
           version: OAUTH_CONFIG.FACEBOOK.SDK_VERSION
         });
-      };
-
-      // Load the SDK
-      (function(d, s, id) {
-        var js, fjs = d.getElementsByTagName(s)[0];
-        if (d.getElementById(id)) return;
-        js = d.createElement(s); js.id = id;
-        js.src = "https://connect.facebook.net/en_US/sdk.js";
-        fjs.parentNode.insertBefore(js, fjs);
-      }(document, 'script', 'facebook-jssdk'));
+        setIsFacebookReady(true);
+      } catch (err) {
+        console.error('FB init error', err);
+      }
     };
 
-    loadFacebookSDK();
+    // load script
+    const script = document.createElement('script');
+    script.id = 'facebook-jssdk';
+    script.src = "https://connect.facebook.net/en_US/sdk.js";
+    script.async = true;
+    script.defer = true;
+    document.body.appendChild(script);
+
+    // cleanup: không remove script vì có thể tái sử dụng, chỉ optional
+    return () => {
+      // không xóa script để tránh vấn đề khi component unmount/mount lại
+    };
   }, []);
 
   const handleChange = (e) => {
@@ -125,7 +149,7 @@ export default function Login() {
     }
   };
 
-  // Google Login Handler
+  // Google Login Handler (giữ nguyên)
   const handleGoogleResponse = async (response) => {
     try {
       setFormState(prev => ({ ...prev, isLoading: true, errorMessage: '' }));
@@ -155,45 +179,48 @@ export default function Login() {
       setFormState(prev => ({...prev,errorMessage: 'Google login is not ready. Please refresh and try again.'}));
   };
 
-  // Facebook Login Handler
+  // Facebook Login Handler (sửa để đảm bảo SDK đã sẵn sàng)
   const handleFacebookLoginClick = () => {
-  if (!window.FB) {
-    setFormState(prev => ({...prev, errorMessage: 'Facebook login is not ready. Please refresh and try again.'}));
+  if (!window.FB || !isFacebookReady) {
+    setFormState(prev => ({
+      ...prev,
+      errorMessage: 'Facebook chưa sẵn sàng. Vui lòng đợi...'
+    }));
     return;
   }
 
-  setFormState(prev => ({ ...prev, isLoading: true, errorMessage: '' }));
+  // GỌI NGAY, KHÔNG setState trước
+  window.FB.login(
+    (response) => {
+      if (response.authResponse) {
+        processFacebookLogin(response.authResponse.accessToken);
+      } else {
+        setFormState(prev => ({
+          ...prev,
+          isLoading: false,
+          errorMessage: 'Đăng nhập bị hủy'
+        }));
+      }
+    },
+    { scope: 'public_profile,email' }
+  );
+};
 
-  window.FB.login((response) => {
-    if (response.authResponse) {
-      const accessToken = response.authResponse.accessToken;
-      processFacebookLogin(accessToken);
-    } else {
-      setFormState(prev => ({ 
-        ...prev, 
-        isLoading: false,
-        errorMessage: 'Facebook login cancelled'
-      }));
+  const processFacebookLogin = async (accessToken) => {
+    try {
+      const result = await authService.externalLogin('Facebook', accessToken);
+
+      if (result.status && result.data) 
+        navigate(ROUTES.LEARN);
+      else 
+        setFormState(prev => ({...prev, errorMessage: result.message || 'Facebook login failed'}));
+    } catch (error) {
+      console.error('Facebook login error:', error);
+      setFormState(prev => ({...prev,errorMessage: error || 'Facebook login failed. Please try again.'}));
+    } finally {
+      setFormState(prev => ({ ...prev, isLoading: false }));
     }
-  }, { scope: 'public_profile,email' });
-};
-
-const processFacebookLogin = async (accessToken) => {
-  try {
-    const result = await authService.externalLogin('facebook', accessToken);
-
-    if (result.status && result.data) 
-      navigate(ROUTES.LEARN);
-    else 
-      setFormState(prev => ({...prev, errorMessage: result.message || 'Facebook login failed'}));
-  } catch (error) {
-    console.error('Facebook login error:', error);
-    setFormState(prev => ({...prev,errorMessage: error || 'Facebook login failed. Please try again.'}));
-  } finally {
-    setFormState(prev => ({ ...prev, isLoading: false }));
-  }
-};
-
+  };
 
   const handleSignUpClick = () => {
     navigate(ROUTES.REGISTER); 

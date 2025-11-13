@@ -13,7 +13,6 @@ import First from "../pages/First/First";
 import Friend from "../pages/Friend/Friend";
 import LeaderBoards from "../pages/LeaderBoards/LeaderBoards";
 import Learn from "../pages/Learn/Learn";
-import GoogleLogin from "../pages/Login/GoogleLogin";
 import Login from "../pages/Login/Login";
 import Practice from "../pages/Practice/Practice";
 import Profile from "../pages/Profile/Profile";
@@ -33,12 +32,6 @@ const routesConfig = [
   {
     path: "/login",
     element: <Login />,
-    layout: AuthLayout,
-    isProtected: false,
-  },
-  {
-    path: "/googlelogin",
-    element: <GoogleLogin />,
     layout: AuthLayout,
     isProtected: false,
   },
