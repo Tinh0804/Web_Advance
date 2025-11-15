@@ -1,3 +1,5 @@
+import VocabularyLearn from "../pages/VocabularyLearn/VocabularyLearn";
+
 // src/utils/constants.js
 export const API_BASE_URL = 'http://192.168.1.237:8080'; 
 export const OAUTH_CONFIG = {
@@ -22,7 +24,7 @@ export const ROUTES = {
   LEADERBOARDS: '/leaderboards',
   FRIEND: '/friend',
   PROFILE: '/profile',
-  
+  VOCABULARYLEARN: '/vocabularylearn',
   // Admin routes
   ADMIN: '/admin',
 };
