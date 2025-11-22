@@ -2,119 +2,110 @@
 import axiosInstance from './axiosConfig';
 
 const authService = {
-  register: async (userData) => {
+  // === REGISTER ===
+  async register(userData) {
     try {
-      console.log('Sending data:', userData);
       const response = await axiosInstance.post('/api/Auth/register', userData);
-      console.log('Response:', response);
       return response.data;
-
     } catch (error) {
-      console.error('Error:', error);
-      if (error.response) {
-        const { data } = error.response;
-        const errorMessage = data?.message || data?.Message || data?.error || 'Registration failed';
-        throw errorMessage;
-      } 
-      else if (error.request) 
-        throw 'Cannot connect to server. Please check if backend is running.';
-      else 
-        throw error.message || 'Registration failed. Please try again.';
+      throw new Error(_handleError(error, 'Registration failed'));
     }
   },
 
-  login: async (username, password) => {
+  // === LOGIN ===
+  async login(username, password) {
     try {
-      const response = await axiosInstance.post('/api/Auth/login', {username,password,});
-      console.log('Response(login):', response);
-      if (response.data.token) {
-        localStorage.setItem('token', response.data.token);
-        if (response.data.refreshToken) 
-          localStorage.setItem('refreshToken', response.data.refreshToken);
-        if (response.data.user) 
-          localStorage.setItem('user', JSON.stringify(response.data.user));
+      const response = await axiosInstance.post('/api/Auth/login', {
+        username,
+        password,
+      });
+
+      const { data } = response.data; // API trả về { status: true, data: { ... } }
+
+      if (data?.token) {
+        localStorage.setItem('token', data.token);
       }
-      return response.data;
-    } catch (error) {
-      console.error('Error(login):', error);
-      if (error.response) {
-        const { data } = error.response;
-        const errorMessage = data?.message || data?.Message || 'Login failed';
-        throw errorMessage;
-      } 
-      else if (error.request) 
-        throw 'Cannot connect to server';
-      else 
-        throw error.message || 'Login failed';
-    }
-  },
-
-  // External login (Google, Facebook)
-  externalLogin: async (provider, accessToken) => {
-    try {
-      console.log(`External login with ${provider}`);
-      const response = await axiosInstance.post('/api/Auth/external-login', {provider,accessToken});
-
-      console.log('Response(external-login):', response);
-
-      if (response.data.token) {
-        localStorage.setItem('token', response.data.token);
-        if (response.data.refreshToken) 
-          localStorage.setItem('refreshToken', response.data.refreshToken);
-        if (response.data.user) 
-          localStorage.setItem('user', JSON.stringify(response.data.user));
+      if (data?.refreshToken) {
+        localStorage.setItem('refreshToken', data.refreshToken);
       }
+      if (data?.user) {
+        localStorage.setItem('user', JSON.stringify(data.user));
+      }
+
       return response.data;
     } catch (error) {
-      console.error(`Error(${provider}-login):`, error);
-      if (error.response) {
-        const { data } = error.response;
-        const errorMessage = data?.message || data?.Message || `${provider} login failed`;
-        throw errorMessage;
-      } 
-      else if (error.request) 
-        throw 'Cannot connect to server';
-      else 
-        throw error.message || `${provider} login failed`;
+      const message = _handleError(error, 'Login failed');
+      return { status: false, message };
     }
   },
 
-  logout: () => {
+  // === EXTERNAL LOGIN (Google, Facebook) ===
+  async externalLogin(provider, accessToken) {
     try {
-      localStorage.removeItem('token');
-      localStorage.removeItem('refreshToken');
-      localStorage.removeItem('user');
-      return true;
+      const response = await axiosInstance.post('/api/Auth/external-login', {
+        provider,
+        accessToken,
+      });
+
+      const { token, refreshToken, user } = response.data;
+
+      if (token) localStorage.setItem('token', token);
+      if (refreshToken) localStorage.setItem('refreshToken', refreshToken);
+      if (user) localStorage.setItem('user', JSON.stringify(user));
+
+      return response.data;
     } catch (error) {
-      console.error('Logout error:', error);
-      return false;
+      const message = error.response?.data?.message
+        || error.response?.data?.Message
+        || error.message
+        || `${provider} login failed`;
+
+      throw new Error(message);
     }
   },
 
-  getCurrentUser: () => {
+  // === LOGOUT ===
+  logout() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('user');
+
+    if (typeof window !== 'undefined') {
+      window.location.href = '/login';
+    }
+  },
+
+  // === GET CURRENT USER ===
+  getCurrentUser() {
     try {
       const userStr = localStorage.getItem('user');
       return userStr ? JSON.parse(userStr) : null;
-    } catch (error) {
-      console.error('Get current user error:', error);
+    } catch {
       return null;
     }
   },
 
-  getToken: () => {
-    try {
-      return localStorage.getItem('token');
-    } catch (error) {
-      console.error('Get token error:', error);
-      return null;
-    }
+  // === GET TOKEN ===
+  getToken() {
+    return localStorage.getItem('token');
   },
 
-  isAuthenticated: () => {
-    const token = authService.getToken();
-    const user = authService.getCurrentUser();
-    return !!(token && user);
+  // === CHECK AUTH ===
+  isAuthenticated() {
+    return !!authService.getToken();
   },
+};
+
+// === PRIVATE: Unified error handler ===
+const _handleError = (error, defaultMsg) => {
+  if (error.response?.data) {
+    const data = error.response.data;
+    return data.message || data.Message || data.error || defaultMsg;
+  }
+  if (error.request) {
+    return 'Cannot connect to server. Please check your internet connection.';
+  }
+  return error.message || defaultMsg;
 };
 
 export default authService;

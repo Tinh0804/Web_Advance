@@ -11,14 +11,20 @@ import ProtectedRoute from "./ProtectedRoute";
 // Pages
 import First from "../pages/First/First";
 import Friend from "../pages/Friend/Friend";
+import ArrangeWordGame from "../pages/Game/ArrangeWordGame";
+import ImageWordGame from "../pages/Game/ImageWordGame";
+import MatchingGame from "../pages/Game/MatchingGame";
+import PictureVocabularyGame from "../pages/Game/PictureVocabularyGame";
 import LeaderBoards from "../pages/LeaderBoards/LeaderBoards";
 import Learn from "../pages/Learn/Learn";
 import GoogleLogin from "../pages/Login/GoogleLogin";
 import Login from "../pages/Login/Login";
 import Practice from "../pages/Practice/Practice";
+import PracticeGame from "../pages/Practice/PracticeGame";
+import PracticeLesson from "../pages/Practice/PracticeLesson";
 import Profile from "../pages/Profile/Profile";
 import Register from "../pages/Register/Register";
-import VocabularyLearn from "../pages/VocabularyLearn/VocabularyLearn"
+import VocabularyLearn from "../pages/VocabularyLearn/VocabularyLearn";
 // import Admin from "../pages/Admin/Admin";
 // import NotFound from "../pages/NotFound/NotFound";
 
@@ -63,6 +69,37 @@ const routesConfig = [
     element: <Practice />,
     layout: MainLayout,
     isProtected: true,
+  },
+  {
+    path: "/practice/unit/:unitId",
+    element: <PracticeLesson />,
+    layout: MainLayout,
+    isProtected: true,
+  },
+  { path: "/practice/lesson/:lessonId/games", 
+    element: <PracticeGame />, 
+    layout: MainLayout, 
+    isProtected: true 
+  },
+  { path: "/practice/game/matching/:lessonId", 
+    element: <MatchingGame />, 
+    layout: MainLayout, 
+    isProtected: true 
+  },
+  { path: "/practice/game/picture-vocab/:lessonId", 
+    element: <PictureVocabularyGame />, 
+    layout: MainLayout, 
+    isProtected: true 
+  },
+  { path: "/practice/game/image-word/:lessonId", 
+    element: <ImageWordGame />, 
+    layout: MainLayout, 
+    isProtected: true 
+  },
+  { path: "/practice/game/arrange/:lessonId", 
+    element: <ArrangeWordGame />, 
+    layout: MainLayout, 
+    isProtected: true 
   },
   {
     path: "/leaderboards",

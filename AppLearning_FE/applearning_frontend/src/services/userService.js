@@ -1,119 +1,50 @@
+// src/services/userService.js (đã sửa + tối ưu + fix lỗi)
 import axiosInstance from './axiosConfig';
 
 const userService = {
-  /**
-   * Lấy thông tin profile
-   * @returns {Promise}
-   */
+  // Lấy thông tin profile
   getProfile: async () => {
-    try {
-      const response = await axiosInstance.get('/api/User/profile');
-      return response;
-    } catch (error) {
-      throw error;
-    }
+    const response = await axiosInstance.get('/api/Profile/myInfo');
+    return response.data.data; 
   },
 
-  /**
-   * Cập nhật profile
-   * @param {object} userData - {firstName, lastName, nativeLanguage, avatar...}
-   * @returns {Promise}
-   */
   updateProfile: async (userData) => {
-    try {
-      const response = await axiosInstance.put('/api/User/profile', userData);
-      return response;
-    } catch (error) {
-      throw error;
-    }
+    const response = await axiosInstance.put('/api/User/profile', userData);
+    return response.data;
   },
 
-  /**
-   * Lấy thống kê user (XP, streak, hearts...)
-   * @returns {Promise}
-   */
   getStats: async () => {
-    try {
-      const response = await axiosInstance.get('/api/User/stats');
-      return response;
-    } catch (error) {
-      throw error;
-    }
+    const response = await axiosInstance.get('/api/User/stats');
+    return response.data;
   },
 
-  /**
-   * Lấy lịch sử học tập
-   * @returns {Promise}
-   */
   getLearningHistory: async () => {
-    try {
-      const response = await axiosInstance.get('/api/User/learning-history');
-      return response;
-    } catch (error) {
-      throw error;
-    }
+    const response = await axiosInstance.get('/api/User/learning-history');
+    return response.data;
   },
 
-  /**
-   * Upload avatar
-   * @param {File} file 
-   * @returns {Promise}
-   */
   uploadAvatar: async (file) => {
-    try {
-      const formData = new FormData();
-      formData.append('avatar', file);
-      
-      const response = await axiosInstance.post('/api/User/avatar', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-      return response;
-    } catch (error) {
-      throw error;
-    }
+    const formData = new FormData();
+    formData.append('avatar', file);
+    const response = await axiosInstance.post('/api/User/avatar', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    return response.data;
   },
 
-  /**
-   * Lấy danh sách bạn bè
-   * @returns {Promise}
-   */
   getFriends: async () => {
-    try {
-      const response = await axiosInstance.get('/api/User/friends');
-      return response;
-    } catch (error) {
-      throw error;
-    }
+    const response = await axiosInstance.get('/api/User/friends');
+    return response.data;
   },
 
-  /**
-   * Thêm bạn
-   * @param {string} userId 
-   * @returns {Promise}
-   */
   addFriend: async (userId) => {
-    try {
-      const response = await axiosInstance.post(`/api/User/friends/${userId}`);
-      return response;
-    } catch (error) {
-      throw error;
-    }
+    const response = await axiosInstance.post(`/api/User/friends/${userId}`);
+    return response.data;
   },
 
-  /**
-   * Xóa bạn
-   * @param {string} userId 
-   * @returns {Promise}
-   */
   removeFriend: async (userId) => {
-    try {
-      const response = await axiosInstance.delete(`/api/User/friends/${userId}`);
-      return response;
-    } catch (error) {
-      throw error;
-    }
+    const response = await axiosInstance.delete(`/api/User/friends/${userId}`);
+    return response.data;
   },
 };
 
