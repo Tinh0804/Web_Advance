@@ -1,1 +1,39 @@
 // The light mode theme styles for the application.
+/* ============================
+   LIGHT THEME
+   ============================ */
+
+.light {
+  /* Màu chính */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f7f7f9;
+  --bg-card: #ffffff;
+
+  /* Màu text */
+  --text-primary: #1a1a1a;
+  --text-secondary: #555;
+  --text-muted: #888;
+
+  /* Viền */
+  --border-color: #e6e6e6;
+
+  /* Icon và nhấn mạnh */
+  --accent: #4caf50;
+  --accent-light: #7ed957;
+
+  /* Nút */
+  --btn-primary-bg: #4caf50;
+  --btn-primary-text: #fff;
+
+  /* Box shadow */
+  --shadow: rgba(0, 0, 0, 0.08);
+
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+/* Áp dụng cho toàn bộ app */
+.light body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}

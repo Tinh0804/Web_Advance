@@ -41,7 +41,15 @@ const Sidebar = () => {
       label: 'PROFILE',
       path: '/profile',
       color: 'text-gray-400'
-    }
+    },
+    {
+      id: 'setting',
+      icon: '⚙️',
+      label: 'SETTING',
+      path: '/setting',
+      color: 'text-gray-400'
+    },
+
   ];
 
   const isActive = (path) => location.pathname === path;
