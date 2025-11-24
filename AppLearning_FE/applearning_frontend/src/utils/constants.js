@@ -24,6 +24,7 @@ export const ROUTES = {
   FRIEND: '/friend',
   PROFILE: '/profile',
   VOCABULARYLEARN: '/vocabularylearn',
+  SETTING: '/setting',
   // Admin routes
   ADMIN: '/admin',
 };

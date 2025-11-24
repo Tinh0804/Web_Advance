@@ -24,6 +24,7 @@ import PracticeGame from "../pages/Practice/PracticeGame";
 import PracticeLesson from "../pages/Practice/PracticeLesson";
 import Profile from "../pages/Profile/Profile";
 import Register from "../pages/Register/Register";
+import Setting from "../pages/Setting/Setting";
 import VocabularyLearn from "../pages/VocabularyLearn/VocabularyLearn";
 // import Admin from "../pages/Admin/Admin";
 // import NotFound from "../pages/NotFound/NotFound";
@@ -122,6 +123,12 @@ const routesConfig = [
   {
     path: "/vocabularylearn",
     element: <VocabularyLearn />,
+    layout: MainLayout,
+    isProtected: true,
+  },
+  {
+    path: "/setting",
+    element: <Setting />,
     layout: MainLayout,
     isProtected: true,
   },
