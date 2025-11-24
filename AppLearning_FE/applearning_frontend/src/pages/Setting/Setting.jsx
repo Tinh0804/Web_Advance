@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import { Bell, Globe, Mail, Moon, Settings, Sun, Target, User, Volume2 } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import userService from "../../services/userService";
-import { Bell, Volume2, Target, User, Globe, Mail, Moon, Sun, Settings } from 'lucide-react';
 
 export default function Setting() {
   const [loading, setLoading] = useState(true);
@@ -21,7 +21,6 @@ export default function Setting() {
     { id: 'intense', label: 'Intense', xp: '50 XP/day', desc: '50 phút/ngày' }
   ];
 
-  // 🟢 Load Settings từ localStorage + load profile từ API thật
   useEffect(() => {
     const load = async () => {
       try {
@@ -128,7 +127,7 @@ export default function Setting() {
             </div>
             <div className="ml-4">
               <h2 className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-800'}`}>
-                Tài khoản
+                {profile.fullName}
               </h2>
               <p className={darkMode ? 'text-gray-400' : 'text-gray-600'}>
                 {profile.email}

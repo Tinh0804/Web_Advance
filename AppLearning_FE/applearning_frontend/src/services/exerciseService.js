@@ -1,8 +1,9 @@
+// src/services/exerciseService.js
 import axiosInstance from './axiosConfig';
 
 const exerciseService = {
-  getByLesson: async (lessonId) => {
-    const response = await axiosInstance.get(`/api/Exercises/lesson/${lessonId}`);
+  getByUnit: async (unitId) => {
+    const response = await axiosInstance.get(`/api/Exercises/unit/${unitId}`);
     return response.data;
   },
 

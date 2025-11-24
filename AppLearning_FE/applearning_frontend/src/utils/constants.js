@@ -1,6 +1,6 @@
 
 // src/utils/constants.js
-export const API_BASE_URL = 'http://localhost:5050'; 
+export const API_BASE_URL = 'http://192.168.99.121:5050'; 
 export const OAUTH_CONFIG = {
   GOOGLE: {
     CLIENT_ID: '976124393303-rlu8pmavq33q5q0781jbglma8ntglmb7.apps.googleusercontent.com',

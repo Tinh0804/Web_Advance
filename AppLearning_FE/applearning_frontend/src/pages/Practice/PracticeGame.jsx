@@ -1,6 +1,7 @@
 // src/pages/Practice/PracticeGame.jsx
 import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+
 import arrangeIcon from '../../assets/icons/arrange.png';
 import imageIcon from '../../assets/icons/image.png';
 import matchingIcon from '../../assets/icons/matching.png';
@@ -13,15 +14,16 @@ const gameTypes = [
   { id: 'arrange', name: "Arrange Word", icon: arrangeIcon, color: "from-blue-400 to-indigo-500" },
 ];
 
-
 class PracticeGame extends React.Component {
   handleGameSelect = (gameId) => {
-    const { lessonId } = this.props.params;
+    const { unitId } = this.props.params;  
     const navigate = this.props.navigate;
-    navigate(`/practice/game/${gameId}/${lessonId}`);
+    navigate(`/practice/game/${gameId}/${unitId}`);
   };
 
   render() {
+    const { navigate } = this.props;
+
     return (
       <div className="min-h-screen bg-gradient-to-b from-purple-50 to-white py-12 px-6">
         <div className="max-w-md mx-auto">
@@ -36,7 +38,6 @@ class PracticeGame extends React.Component {
                 onClick={() => this.handleGameSelect(game.id)}
                 className="w-full bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 p-6 flex items-center gap-5 border-2 border-transparent hover:border-purple-300 group"
               >
-                {/* Icon từ public/icons/ */}
                 <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${game.color} p-3 flex items-center justify-center shadow-md`}>
                   <img
                     src={game.icon}
@@ -51,19 +52,18 @@ class PracticeGame extends React.Component {
                 </div>
 
                 <div className="opacity-0 group-hover:opacity-100 transition-opacity text-purple-600 font-bold text-lg">
-                  Right Arrow
+                  →
                 </div>
               </button>
             ))}
           </div>
 
-          {/* Nút back */}
           <div className="mt-10 text-center">
             <button
-              onClick={() => this.props.navigate(-1)}
+              onClick={() => navigate(-1)}
               className="text-purple-600 font-medium flex items-center gap-2 mx-auto hover:gap-3 transition-all"
             >
-              Left Arrow ← Back to lessons
+              ← Back to units
             </button>
           </div>
         </div>
@@ -72,9 +72,8 @@ class PracticeGame extends React.Component {
   }
 }
 
-// Wrapper để dùng useParams + useNavigate trong class component
 const PracticeGameWithRouter = () => {
-  const params = useParams(); // { lessonId: "89" }
+  const params = useParams(); 
   const navigate = useNavigate();
   return <PracticeGame params={params} navigate={navigate} />;
 };

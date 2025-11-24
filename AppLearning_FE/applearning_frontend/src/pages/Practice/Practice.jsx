@@ -1,6 +1,6 @@
 // src/pages/Practice.jsx
 import React from 'react';
-import { useNavigate } from 'react-router-dom'; // Dùng hook này để navigate
+import { useNavigate } from 'react-router-dom';
 import unitService from '../../services/unitService';
 
 class Practice extends React.Component {
@@ -32,18 +32,20 @@ class Practice extends React.Component {
   getGroupedUnits = () => {
     const { units } = this.state;
     const grouped = {};
+
     units.forEach(unit => {
       if (!grouped[unit.courseId]) {
         grouped[unit.courseId] = { courseId: unit.courseId, units: [] };
       }
       grouped[unit.courseId].units.push(unit);
     });
+
     return Object.values(grouped);
   };
 
   render() {
     const { loading, error } = this.state;
-    const navigate = this.props.navigate; // Được inject từ wrapper dưới
+    const navigate = this.props.navigate;
 
     if (loading) {
       return (
@@ -56,18 +58,24 @@ class Practice extends React.Component {
       );
     }
 
-    if (error || this.getGroupedUnits().flatMap(g => g.units).length === 0) {
+    const groupedUnits = this.getGroupedUnits();
+    const hasUnits = groupedUnits.flatMap(g => g.units).length > 0;
+
+    if (error || !hasUnits) {
       return (
         <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
-          <p className="text-2xl text-gray-600 mb-6">Bạn chưa mở khóa unit nào</p>
-          <button className="bg-purple-600 text-white px-8 py-4 rounded-xl text-lg font-bold hover:bg-purple-700">
+          <p className="text-2xl text-gray-600 mb-6">
+            {error || 'Bạn chưa mở khóa unit nào'}
+          </p>
+          <button 
+            onClick={() => navigate('/courses')} // hoặc trang học chính
+            className="bg-purple-600 text-white px-8 py-4 rounded-xl text-lg font-bold hover:bg-purple-700 transition"
+          >
             Bắt đầu học ngay
           </button>
         </div>
       );
     }
-
-    const groupedUnits = this.getGroupedUnits();
 
     return (
       <div className="min-h-screen bg-gradient-to-b from-purple-50 to-white py-12 px-4">
@@ -82,22 +90,15 @@ class Practice extends React.Component {
                 <button
                   key={unit.unitId}
                   onClick={() => navigate(`/practice/unit/${unit.unitId}`)}
-                  className="w-full bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 p-6 flex items-center gap-6 border-2 border-transparent hover:border-purple-300"
+                  className="w-full bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 p-6 flex items-center gap-6 border-2 border-transparent hover:border-purple-300 text-left"
                 >
-                  {/* Icon placeholder */}
                   <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center flex-shrink-0 border-2 border-dashed border-gray-300">
                     <span className="text-3xl text-gray-400">Icon</span>
                   </div>
-
-                  <div className="text-left flex-1">
-                    <h3 className="text-xl font-bold text-gray-800">
-                      Unit {unit.unitId}
-                    </h3>
-                    <p className="text-gray-600 text-lg mt-1">
-                      {unit.unitName}
-                    </p>
+                  <div className="flex-1">
+                    <h3 className="text-xl font-bold text-gray-800"> Unit {unit.unitId} </h3>
+                    <p className="text-gray-600 text-lg mt-1">{unit.unitName}</p>
                   </div>
-                  {/* Đã bỏ mũi tên Right Arrow */}
                 </button>
               ))}
             </div>
@@ -108,7 +109,6 @@ class Practice extends React.Component {
   }
 }
 
-// Wrapper để dùng useNavigate trong class component
 const PracticeWithNavigate = (props) => {
   const navigate = useNavigate();
   return <Practice {...props} navigate={navigate} />;
