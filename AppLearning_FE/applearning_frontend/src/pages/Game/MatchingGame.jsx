@@ -11,7 +11,6 @@ const MatchingGame = () => {
   const { unitId } = useParams();
   const navigate = useNavigate();
 
-  // Audio refs
   const correctSound = useRef(null);
   const incorrectSound = useRef(null);
 
@@ -22,13 +21,12 @@ const MatchingGame = () => {
   const [selectedRight, setSelectedRight] = useState(null);
   const [matchedPairs, setMatchedPairs] = useState([]);
   const [wrongPairs, setWrongPairs] = useState([]);
-  const [lives, setLives] = useState(3);
+  const [lives, setLives] = useState(5);
   const [score, setScore] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isCompleted, setIsCompleted] = useState(false);
 
-  // Initialize audio
   useEffect(() => {
     correctSound.current = new Audio(correctAudio);
     incorrectSound.current = new Audio(incorrectAudio);
@@ -38,7 +36,6 @@ const MatchingGame = () => {
     incorrectSound.current.preload = 'auto';
   }, []);
 
-  // Load exercises từ API
   useEffect(() => {
     const loadExercises = async () => {
       try {
@@ -74,7 +71,7 @@ const MatchingGame = () => {
     
     const parsedPairs = [];
     
-    // Parse options với logic đúng
+    // Parse từng option - mỗi option là 1 cặp hoàn chỉnh "English,Vietnamese"
     exercise.options.forEach((option, index) => {
       console.log(`Option ${index}:`, option);
       const parts = option.split(',');
@@ -90,13 +87,21 @@ const MatchingGame = () => {
 
     console.log('✅ Parsed pairs:', parsedPairs);
 
-    // Shuffle riêng cho mỗi cột - QUAN TRỌNG: giữ nguyên pairId tương ứng với index trong parsedPairs
+    // Shuffle riêng cho mỗi cột
     const shuffledLeft = [...parsedPairs]
-      .map((p, i) => ({ id: `left-${i}`, text: p.english, pairId: i }))
+      .map((p, i) => ({ 
+        id: `left-${i}`, 
+        text: p.vietnamese,  // Cột trái: tiếng Việt
+        pairId: i 
+      }))
       .sort(() => Math.random() - 0.5);
     
     const shuffledRight = [...parsedPairs]
-      .map((p, i) => ({ id: `right-${i}`, text: p.vietnamese, pairId: i }))
+      .map((p, i) => ({ 
+        id: `right-${i}`, 
+        text: p.english,  // Cột phải: tiếng Anh
+        pairId: i 
+      }))
       .sort(() => Math.random() - 0.5);
 
     console.log('🔀 Shuffled Left:', shuffledLeft);
@@ -104,8 +109,7 @@ const MatchingGame = () => {
 
     setPairs({
       left: shuffledLeft,
-      right: shuffledRight,
-      original: parsedPairs // Lưu cặp gốc để check
+      right: shuffledRight
     });
 
     setMatchedPairs([]);
@@ -143,13 +147,12 @@ const MatchingGame = () => {
     
     // Kiểm tra xem 2 item có cùng pairId không
     const isCorrect = leftItem.pairId === rightItem.pairId;
-    console.log('  Result:', isCorrect ? '✅ CORRECT' : '❌ WRONG');
+    console.log('  Result:', isCorrect ? 'CORRECT' : 'WRONG');
 
     if (isCorrect) {
       setMatchedPairs(prev => [...prev, { left: leftItem, right: rightItem }]);
       setScore(prev => prev + 10);
       
-      // Play correct sound
       if (correctSound.current) {
         correctSound.current.currentTime = 0;
         correctSound.current.play().catch(() => {});
@@ -169,7 +172,6 @@ const MatchingGame = () => {
       setWrongPairs([{ left: leftItem, right: rightItem }]);
       setLives(prev => prev - 1);
 
-      // Play incorrect sound
       if (incorrectSound.current) {
         incorrectSound.current.currentTime = 0;
         incorrectSound.current.play().catch(() => {});
@@ -206,10 +208,10 @@ const MatchingGame = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-purple-50 to-white flex items-center justify-center">
+      <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
-          <div className="w-12 h-12 border-4 border-purple-500 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-          <p className="text-lg text-purple-700 font-bold">Đang tải bài tập...</p>
+          <div className="w-16 h-16 border-4 border-gray-300 border-t-yellow-400 rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-gray-600">Đang tải bài tập...</p>
         </div>
       </div>
     );
@@ -217,14 +219,14 @@ const MatchingGame = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-purple-50 to-white flex items-center justify-center px-4">
-        <div className="bg-white rounded-2xl p-8 shadow-xl text-center max-w-md">
-          <div className="text-5xl mb-4">😢</div>
-          <h2 className="text-xl font-bold text-gray-800 mb-3">Đã có lỗi xảy ra</h2>
-          <p className="text-gray-600 mb-5">{error}</p>
+      <div className="min-h-screen bg-white flex items-center justify-center px-4">
+        <div className="text-center max-w-md">
+          <div className="text-6xl mb-4">😢</div>
+          <h2 className="text-2xl font-bold text-gray-800 mb-3">Đã có lỗi xảy ra</h2>
+          <p className="text-gray-600 mb-6">{error}</p>
           <button
             onClick={() => navigate('/practice')}
-            className="px-6 py-2 bg-purple-600 text-white rounded-full font-semibold hover:bg-purple-700 transition"
+            className="px-8 py-3 bg-blue-500 text-white rounded-xl font-bold hover:bg-blue-600"
           >
             Quay lại
           </button>
@@ -235,28 +237,28 @@ const MatchingGame = () => {
 
   if (isCompleted) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-yellow-50 to-white flex items-center justify-center px-4">
-        <div className="bg-white rounded-2xl p-8 shadow-xl text-center max-w-md">
-          <Trophy className="w-20 h-20 text-yellow-500 mx-auto mb-4" />
+      <div className="min-h-screen bg-white flex items-center justify-center px-4">
+        <div className="text-center max-w-md">
+          <Trophy className="w-24 h-24 text-yellow-400 mx-auto mb-6" />
           <h2 className="text-3xl font-bold text-gray-800 mb-3">Chúc mừng!</h2>
-          <p className="text-lg text-gray-600 mb-5">
+          <p className="text-lg text-gray-600 mb-6">
             Bạn đã hoàn thành tất cả bài tập ghép cặp!
           </p>
-          <div className="flex justify-center gap-3 mb-6">
-            <div className="bg-purple-100 px-5 py-2 rounded-xl">
-              <Star className="w-5 h-5 text-purple-600 mx-auto mb-1" />
-              <p className="text-xl font-bold text-purple-700">{score}</p>
-              <p className="text-xs text-purple-600">Điểm</p>
+          <div className="flex justify-center gap-4 mb-8">
+            <div className="bg-yellow-50 px-6 py-3 rounded-xl">
+              <Star className="w-6 h-6 text-yellow-500 mx-auto mb-1" />
+              <p className="text-2xl font-bold text-gray-800">{score}</p>
+              <p className="text-sm text-gray-600">Điểm</p>
             </div>
-            <div className="bg-green-100 px-5 py-2 rounded-xl">
-              <Heart className="w-5 h-5 text-green-600 mx-auto mb-1" />
-              <p className="text-xl font-bold text-green-700">{lives}</p>
-              <p className="text-xs text-green-600">Mạng còn lại</p>
+            <div className="bg-red-50 px-6 py-3 rounded-xl">
+              <Heart className="w-6 h-6 text-red-500 mx-auto mb-1" />
+              <p className="text-2xl font-bold text-gray-800">{lives}</p>
+              <p className="text-sm text-gray-600">Mạng còn lại</p>
             </div>
           </div>
           <button
             onClick={() => navigate('/practice')}
-            className="px-8 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-full font-bold hover:scale-105 transition shadow-lg"
+            className="px-8 py-3 bg-blue-500 text-white rounded-xl font-bold hover:bg-blue-600"
           >
             Về trang Practice
           </button>
@@ -268,105 +270,120 @@ const MatchingGame = () => {
   const currentExercise = exercises[currentExerciseIndex];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-purple-50 to-white py-4 px-4">
+    <div className="min-h-screen bg-white">
       {/* Header */}
-      <div className="max-w-4xl mx-auto mb-6">
-        <div className="flex items-center justify-between">
-          <button
-            onClick={() => navigate('/practice')}
-            className="w-9 h-9 bg-white rounded-full flex items-center justify-center shadow-md hover:scale-110 transition"
-          >
-            <X className="w-4 h-4 text-purple-700" />
-          </button>
+      <div className="border-b border-gray-200 bg-white">
+        <div className="max-w-5xl mx-auto px-4 py-4">
+          <div className="flex items-center justify-between mb-4">
+            <button
+              onClick={() => navigate('/practice')}
+              className="p-2 hover:bg-gray-100 rounded-lg transition"
+            >
+              <X className="w-6 h-6 text-gray-600" />
+            </button>
 
-          <div className="flex-1 mx-4">
-            <div className="bg-gray-200 rounded-full h-2">
-              <div
-                className="bg-gradient-to-r from-purple-500 to-pink-500 h-full rounded-full transition-all duration-500"
-                style={{ width: `${((currentExerciseIndex + 1) / exercises.length) * 100}%` }}
-              />
+            <div className="flex-1 mx-6">
+              <div className="bg-gray-200 rounded-full h-3 overflow-hidden">
+                <div
+                  className="bg-yellow-400 h-full transition-all duration-500"
+                  style={{ width: `${((currentExerciseIndex + 1) / exercises.length) * 100}%` }}
+                />
+              </div>
             </div>
-          </div>
 
-          <div className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-full shadow-md">
-            <Heart className="w-4 h-4 text-red-500 fill-red-500" />
-            <span className="font-bold text-red-500 text-sm">{lives}</span>
+            <div className="flex items-center gap-2">
+              <Heart className="w-6 h-6 text-red-500 fill-red-500" />
+              <span className="font-bold text-red-500 text-xl">{lives}</span>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Main Content */}
-      <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-6">
-          <h1 className="text-2xl font-bold text-gray-800 mb-1">Chọn cặp từ</h1>
-          <p className="text-base text-purple-600">{currentExercise.question}</p>
-          <div className="mt-3 inline-block bg-purple-100 px-4 py-1.5 rounded-full">
-            <span className="text-purple-700 font-bold text-sm">
-              Câu {currentExerciseIndex + 1}/{exercises.length} • Điểm: {score}
-            </span>
-          </div>
+      <div className="max-w-5xl mx-auto px-4 py-12">
+        {/* Title */}
+        <div className="text-center mb-12">
+          <h1 className="text-3xl font-bold text-gray-800 mb-2">Chọn cặp từ</h1>
         </div>
 
-        {/* Matching Grid */}
-        <div className="grid grid-cols-2 gap-4">
-          {/* Left Column */}
+        {/* Matching Grid - NO NUMBERS */}
+        <div className="grid grid-cols-2 gap-6 max-w-4xl mx-auto">
+          {/* Left Column - Vietnamese */}
           <div className="space-y-3">
             {pairs.left?.map((item) => (
               <button
                 key={item.id}
                 onClick={() => handleSelect(item, 'left')}
                 disabled={isMatched(item)}
-                className={`w-full p-4 rounded-xl text-base font-semibold transition-all transform hover:scale-105 ${
-                  isMatched(item)
-                    ? 'bg-green-100 text-green-700 cursor-not-allowed opacity-50'
+                className={`
+                  w-full px-6 py-4 rounded-2xl font-medium text-lg
+                  border-2 transition-all
+                  ${isMatched(item)
+                    ? 'bg-green-50 border-green-200 text-green-600 cursor-not-allowed opacity-60'
                     : isWrong(item)
-                    ? 'bg-red-100 text-red-700 border-2 border-red-400 animate-pulse'
+                    ? 'bg-red-50 border-red-300 text-red-600'
                     : isSelected(item, 'left')
-                    ? 'bg-purple-200 text-purple-800 border-2 border-purple-500 scale-105'
-                    : 'bg-white text-gray-800 border-2 border-gray-200 hover:border-purple-300 hover:bg-purple-50'
-                }`}
+                    ? 'bg-blue-50 border-blue-400 text-blue-700 scale-[1.02]'
+                    : 'bg-white border-gray-200 text-gray-700 hover:border-gray-300 hover:bg-gray-50'
+                  }
+                `}
               >
-                <div className="flex items-center justify-between">
-                  <span className="text-xl mr-2">🅰️</span>
-                  <span className="flex-1 text-center">{item.text}</span>
-                  {isMatched(item) && <span className="text-xl">✓</span>}
-                </div>
+                {item.text}
               </button>
             ))}
           </div>
 
-          {/* Right Column */}
+          {/* Right Column - English */}
           <div className="space-y-3">
             {pairs.right?.map((item) => (
               <button
                 key={item.id}
                 onClick={() => handleSelect(item, 'right')}
                 disabled={isMatched(item)}
-                className={`w-full p-4 rounded-xl text-base font-semibold transition-all transform hover:scale-105 ${
-                  isMatched(item)
-                    ? 'bg-green-100 text-green-700 cursor-not-allowed opacity-50'
+                className={`
+                  w-full px-6 py-4 rounded-2xl font-medium text-lg
+                  border-2 transition-all
+                  ${isMatched(item)
+                    ? 'bg-green-50 border-green-200 text-green-600 cursor-not-allowed opacity-60'
                     : isWrong(item)
-                    ? 'bg-red-100 text-red-700 border-2 border-red-400 animate-pulse'
+                    ? 'bg-red-50 border-red-300 text-red-600'
                     : isSelected(item, 'right')
-                    ? 'bg-purple-200 text-purple-800 border-2 border-purple-500 scale-105'
-                    : 'bg-white text-gray-800 border-2 border-gray-200 hover:border-purple-300 hover:bg-purple-50'
-                }`}
+                    ? 'bg-blue-50 border-blue-400 text-blue-700 scale-[1.02]'
+                    : 'bg-white border-gray-200 text-gray-700 hover:border-gray-300 hover:bg-gray-50'
+                  }
+                `}
               >
-                <div className="flex items-center justify-between">
-                  {isMatched(item) && <span className="text-xl">✓</span>}
-                  <span className="flex-1 text-center">{item.text}</span>
-                  <span className="text-xl ml-2">🅱️</span>
-                </div>
+                {item.text}
               </button>
             ))}
           </div>
         </div>
 
         {/* Progress Info */}
-        <div className="mt-6 text-center">
+        <div className="mt-8 text-center">
           <p className="text-gray-600 text-sm">
-            Đã ghép: <span className="font-bold text-purple-600">{matchedPairs.length}</span> / {pairs.left?.length}
+            Đã ghép: <span className="font-bold text-blue-600">{matchedPairs.length}</span> / {pairs.left?.length}
           </p>
+        </div>
+      </div>
+
+      {/* Bottom buttons */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 py-6">
+        <div className="max-w-5xl mx-auto px-4 flex justify-between">
+          <button 
+            onClick={() => {
+              if (currentExerciseIndex + 1 < exercises.length) {
+                setCurrentExerciseIndex(prev => prev + 1);
+                loadExercise(exercises[currentExerciseIndex + 1]);
+              }
+            }}
+            className="px-8 py-3 text-blue-500 font-bold hover:bg-blue-50 rounded-xl transition"
+          >
+            BỎ QUA
+          </button>
+          <button className="px-8 py-3 bg-gray-200 text-gray-400 font-bold rounded-xl cursor-not-allowed">
+            KIỂM TRA
+          </button>
         </div>
       </div>
     </div>
