@@ -1,11 +1,29 @@
-import { useState, useEffect } from 'react';
-import { 
-  ChevronLeft, ChevronRight, X, Heart, Flag, CheckCircle, 
-  RotateCcw, Sparkles, Volume2, Star, BookOpen, AlertCircle 
+// src/pages/VocabularyLearn.jsx
+import {
+  AlertCircle,
+  BookOpen,
+  CheckCircle,
+  ChevronLeft, ChevronRight,
+  Flag,
+  Heart,
+  RotateCcw, Sparkles,
+  Star,
+  Volume2,
+  X
 } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import wordService from '../../services/wordService';
 
-const VocabularyLearn = ({ lessonId = 1 }) => {
+const VocabularyLearn = () => {
+  // Lấy lessonId từ URL params
+  const { lessonId } = useParams();
+  const location = useLocation();
+  const navigate = useNavigate();
+  
+  // Lấy thông tin bổ sung từ state (nếu có)
+  const { lessonName, unitName } = location.state || {};
+
   const [vocabList, setVocabList] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -38,7 +56,9 @@ const VocabularyLearn = ({ lessonId = 1 }) => {
       }
     };
 
-    loadWords();
+    if (lessonId) {
+      loadWords();
+    }
   }, [lessonId]);
 
   // Loading
@@ -65,7 +85,7 @@ const VocabularyLearn = ({ lessonId = 1 }) => {
             <button onClick={() => window.location.reload()} className="px-8 py-4 bg-purple-600 text-white rounded-full font-semibold hover:bg-purple-700 transition shadow-lg">
               Thử lại
             </button>
-            <button onClick={() => window.history.back()} className="px-8 py-4 bg-gray-200 text-gray-700 rounded-full font-semibold hover:bg-gray-300 transition">
+            <button onClick={() => navigate(-1)} className="px-8 py-4 bg-gray-200 text-gray-700 rounded-full font-semibold hover:bg-gray-300 transition">
               Quay lại
             </button>
           </div>
@@ -154,14 +174,17 @@ const VocabularyLearn = ({ lessonId = 1 }) => {
 
       {/* Header */}
       <div className="relative z-10 flex items-center justify-between px-6 pt-6 pb-3">
-        <button onClick={() => window.history.back()} className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition active:scale-95">
+        <button onClick={() => navigate(-1)} className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition active:scale-95">
           <X className="w-5 h-5 text-purple-700" />
         </button>
         <div className="text-center">
-          <h1 className="text-xl font-bold text-purple-800 flex items-center gap-2">
-            <BookOpen className="w-6 h-6" /> Học Từ Vựng
+          <h1 className="text-xl font-bold text-purple-800 flex items-center gap-2 justify-center">
+            <BookOpen className="w-6 h-6" /> 
+            {lessonName || 'Học Từ Vựng'}
           </h1>
-          <p className="text-xs text-purple-600 mt-1">Bài {lessonId}</p>
+          <p className="text-xs text-purple-600 mt-1">
+            {unitName ? `${unitName} - Bài ${lessonId}` : `Bài ${lessonId}`}
+          </p>
         </div>
         <button onClick={resetProgress} className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition active:scale-95">
           <RotateCcw className="w-5 h-5 text-purple-700" />
@@ -195,7 +218,7 @@ const VocabularyLearn = ({ lessonId = 1 }) => {
         </div>
       </div>
 
-      <div className="text-center mb-5 text-sm font-bold text-purple-700 bg-white/60 px-4 py-1 rounded-full inline-block">
+      <div className="text-center mb-5 text-sm font-bold text-purple-700 bg-white/60 px-4 py-1 rounded-full inline-block mx-auto">
         Từ {currentIndex + 1} / {vocabList.length}
       </div>
 

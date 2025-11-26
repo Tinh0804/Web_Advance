@@ -19,8 +19,8 @@ import LeaderBoards from "../pages/LeaderBoards/LeaderBoards";
 import Learn from "../pages/Learn/Learn";
 import GoogleLogin from "../pages/Login/GoogleLogin";
 import Login from "../pages/Login/Login";
-import Practice from "../pages/Practice/Practice"; // ← trang chọn Unit
-import PracticeGame from "../pages/Practice/PracticeGame"; // ← trang chọn loại game
+import Practice from "../pages/Practice/Practice";
+import PracticeGame from "../pages/Practice/PracticeGame";
 import Profile from "../pages/Profile/Profile";
 import Register from "../pages/Register/Register";
 import Setting from "../pages/Setting/Setting";
@@ -54,8 +54,17 @@ const routesConfig = [
   },
 
   // ========== PROTECTED ROUTES ==========
-  { path: "/learn", 
+  { 
+    path: "/learn", 
     element: <Learn />, 
+    layout: MainLayout, 
+    isProtected: true 
+  },
+
+  // Route cho VocabularyLearn với lessonId parameter
+  { 
+    path: "/vocabulary/:lessonId", 
+    element: <VocabularyLearn />, 
     layout: MainLayout, 
     isProtected: true 
   },
@@ -118,12 +127,6 @@ const routesConfig = [
   { 
     path: "/profile",      
     element: <Profile />,      
-    layout: MainLayout, 
-    isProtected: true 
-  },
-  { 
-    path: "/vocabularylearn", 
-    element: <VocabularyLearn />, 
     layout: MainLayout, 
     isProtected: true 
   },

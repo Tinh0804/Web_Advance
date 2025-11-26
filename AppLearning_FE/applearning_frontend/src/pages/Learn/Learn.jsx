@@ -1,10 +1,13 @@
 // src/pages/Learn.jsx
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import lessonService from '../../services/lessonService';
 import unitService from '../../services/unitService';
+
 const Learn = () => {
   const [courseData, setCourseData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
   const courseId = 1;
 
   useEffect(() => {
@@ -13,7 +16,6 @@ const Learn = () => {
         setLoading(true);
         const units = await unitService.getUnitsByCourseId(courseId);
 
-        // Nếu rỗng → không có course
         if (!units || units.length === 0) {
           setCourseData(null);
           return;
@@ -41,13 +43,20 @@ const Learn = () => {
     fetchCourseData();
   }, [courseId]);
 
-  // Khi click bài học
+  // Khi click bài học - navigate đến trang VocabularyLearn
   const handleLessonClick = (lesson, unit) => {
     if (lesson.unlockRequired && unit.isLocked) {
       console.log("Bài học bị khoá.");
       return;
     }
-    console.log("Vào học:", lesson);
+    
+    // Navigate đến trang vocabulary với lessonId
+    navigate(`/vocabulary/${lesson.lessonId}`, {
+      state: {
+        lessonName: lesson.lessonName,
+        unitName: unit.unitName
+      }
+    });
   };
 
   const getPosition = (index) => {
