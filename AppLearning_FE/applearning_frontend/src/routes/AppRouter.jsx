@@ -16,7 +16,6 @@ import ArrangeWordGame from "../pages/Game/ArrangeWordGame";
 import ListenChooseGame from "../pages/Game/ListenChooseGame";
 import MatchingGame from "../pages/Game/MatchingGame";
 import PictureVocabularyGame from "../pages/Game/PictureVocabularyGame";
-
 import LeaderBoards from "../pages/LeaderBoards/LeaderBoards";
 import Learn from "../pages/Learn/Learn";
 import GoogleLogin from "../pages/Login/GoogleLogin";
@@ -102,12 +101,6 @@ const routesConfig = [
   { 
     path: "/practice/game/picture-vocab/:unitId",   
     element: <PictureVocabularyGame />,
-    layout: MainLayout, 
-    isProtected: true 
-  },
-  { 
-    path: "/practice/game/image-word/:unitId",      
-    element: <ImageWordGame />,        
     layout: MainLayout, 
     isProtected: true 
   },
