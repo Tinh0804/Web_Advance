@@ -1,32 +1,17 @@
 // src/components/RightBar/RightBar.jsx
-import {
-  Award, Clock, Flame, Gem, Heart,
-  Loader2, Lock, Target, Trophy, Zap
-} from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { Loader2, Lock } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import diamondIcon from '../../../assets/icons/diamond.png';
+import fireIcon from '../../../assets/icons/fire.png';
+import flagIcon from '../../../assets/icons/flat.png';
+import heartIcon from '../../../assets/icons/heart.png';
+import logo2 from '../../../assets/icons/logo2.png';
 import userService from '../../../services/userService';
 
 const RightBar = () => {
   const [profile, setProfile] = useState(null);
   const [loading, setLoadingState] = useState(true);
-
-  // REALTIME: Đếm thời gian hoạt động theo giây (để hiện đồng hồ đẹp)
-  const [secondsToday, setSecondsToday] = useState(() => {
-    const saved = localStorage.getItem('dailyActiveSeconds');
-    return saved ? parseInt(saved, 10) : 0;
-  });
-
-  const intervalRef = useRef(null);
-
-  // Format giây → phút:giây đẹp như đồng hồ
-  const formatTime = (totalSeconds) => {
-    const mins = Math.floor(totalSeconds / 60);
-    const secs = totalSeconds % 60;
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
-  };
-
-  // Tính tiến độ % cho thanh bar (10 phút = 600 giây)
-  const progress = Math.min((secondsToday / 600) * 100, 100);
+  const [dailyXP, setDailyXP] = useState(0);
 
   useEffect(() => {
     const loadProfile = async () => {
@@ -37,7 +22,7 @@ const RightBar = () => {
         }
       } catch (err) {
         console.error('Lỗi tải profile:', err);
-        setProfile({ level: 1, streak: 0, gems: 0, hearts: 5 });
+        setProfile({ level: 5, streak: 0, gems: 505, hearts: 5 });
       } finally {
         setLoadingState(false);
       }
@@ -45,231 +30,153 @@ const RightBar = () => {
     loadProfile();
   }, []);
 
-  // REALTIME TIMER: Đếm từng giây khi tab đang mở
-  useEffect(() => {
-    const startTimer = () => {
-      intervalRef.current = setInterval(() => {
-        setSecondsToday(prev => {
-          const newSeconds = prev + 1;
-          localStorage.setItem('dailyActiveSeconds', newSeconds.toString());
-          return newSeconds;
-        });
-      }, 1000); // Cập nhật mỗi giây
-    };
-
-    const handleVisibilityChange = () => {
-      if (document.hidden) {
-        clearInterval(intervalRef.current);
-      } else {
-        startTimer();
-      }
-    };
-
-    startTimer();
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-
-    return () => {
-      clearInterval(intervalRef.current);
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-    };
-  }, []);
-
-  // Reset mỗi ngày mới
-  useEffect(() => {
-    const today = new Date().toDateString();
-    const lastReset = localStorage.getItem('lastActiveReset');
-    if (lastReset !== today) {
-      setSecondsToday(0);
-      localStorage.setItem('dailyActiveSeconds', '0');
-      localStorage.setItem('lastActiveReset', today);
-    }
-  }, []);
-
-  const level = profile?.level ?? 1;
+  const level = profile?.level ?? 5;
   const streak = profile?.streak ?? 0;
-  const gems = profile?.gems ?? 0;
+  const gems = profile?.gems ?? 505;
   const hearts = profile?.hearts ?? 5;
 
   return (
-    <aside className="h-full w-full bg-gradient-to-b from-gray-50 to-white flex flex-col overflow-y-auto pb-6">
-      {/* HEADER */}
-      <div className="p-4 bg-white border-b border-gray-200">
-        <div className="flex items-center justify-between text-sm font-medium">
-          <div className="flex items-center gap-2">
-            <img src="/flags/us.svg" alt="US" className="w-5 h-5 rounded-sm" />
-            <span className="text-gray-800 font-bold">
+    <aside className="h-full w-full bg-white flex flex-col overflow-y-auto">
+      {/* HEADER - STATS */}
+      <div className="px-6 py-5 bg-white border-b border-gray-100">
+        <div className="flex items-center justify-between">
+          {/* Level với flag */}
+          <div className="flex flex-col items-center">
+            <div className="w-8 h-8 rounded-2xl mb-1">
+              <img 
+                src={flagIcon} 
+                alt="Flag" 
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <span className="font-black text-gray-800">
               {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : level}
             </span>
           </div>
-          <div className="flex items-center gap-1 text-orange-600">
-            <Flame className="w-5 h-5" />
-            <span className="font-bold">{loading ? '-' : streak}</span>
+
+          {/* Streak */}
+          <div className="flex flex-col items-center">
+            <img src={fireIcon} alt="Fire" className="w-8 h-8 mb-1" />
+            <span className="font-black text-gray-800">
+              {loading ? '-' : streak}
+            </span>
           </div>
-          <div className="flex items-center gap-1 text-blue-600">
-            <Gem className="w-5 h-5 fill-current" />
-            <span className="font-bold text-lg">{loading ? '-' : gems}</span>
+
+          {/* Gems */}
+          <div className="flex flex-col items-center">
+            <img src={diamondIcon} alt="Diamond" className="w-8 h-8 mb-1" />
+            <span className="font-black text-blue-400">
+              {loading ? '-' : gems}
+            </span>
           </div>
-          <div className="flex items-center gap-1 text-red-500">
-            <Heart className="w-5 h-5 fill-current" />
-            <span className="font-bold text-lg">{loading ? '-' : hearts}</span>
+
+          {/* Hearts */}
+          <div className="flex flex-col items-center">
+            <img src={heartIcon} alt="Heart" className="w-8 h-8 mb-1" />
+            <span className="font-black text-red-400">
+              {loading ? '-' : hearts}
+            </span>
           </div>
         </div>
       </div>
 
-      {/* SUPER DUOLINGO CARD */}
-      <div className="mx-5 mt-5 relative overflow-hidden rounded-3xl shadow-2xl">
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-600 via-pink-600 to-orange-500"></div>
-        <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-0 left-0 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
-        <div className="relative p-6 text-white">
-          <div className="inline-flex items-center gap-2 bg-white/25 backdrop-blur-md px-4 py-2 rounded-full text-xs font-bold mb-4 border border-white/30">
-            <Zap className="w-4 h-4 fill-white" />
-            SUPER DUOLINGO
+      {/* SUPER CARD - TEXT VÀ LOGO NGANG HÀNG */}
+      <div className="px-6 py-5">
+        <div className="bg-white rounded-3xl border-2 border-gray-100 p-6 shadow-sm">
+          {/* Badge SUPER */}
+          <div className="inline-flex items-center px-4 py-1.5 bg-gradient-to-r from-green-400 to-blue-500 rounded-full mb-4">
+            <span className="text-white text-xs font-black tracking-wide">SUPER</span>
           </div>
-          <div className="flex items-start gap-4 mb-5">
+
+          {/* FLEX: Text bên trái - Logo bên phải */}
+          <div className="flex items-start justify-between gap-4 mb-6">
             <div className="flex-1">
-              <h3 className="text-xl font-bold mb-3 drop-shadow-lg">Thử Super miễn phí!</h3>
-              <div className="space-y-3">
-                {['Không quảng cáo', 'Học không giới hạn', 'Tính năng cao cấp'].map((text, i) => (
-                  <div key={i} className="flex items-center gap-3">
-                    <div className="w-6 h-6 bg-white/20 rounded-lg flex items-center justify-center">
-                      <span className="text-base">{i === 0 ? 'No ads' : i === 1 ? 'Unlimited' : 'Premium'}</span>
-                    </div>
-                    <span className="text-sm font-medium">{text}</span>
-                  </div>
-                ))}
-              </div>
+              <h3 className="font-black text-gray-900 mb-3">
+                Thử Super miễn phí
+              </h3>
+              
+              <p className="text-base text-gray-600 leading-relaxed">
+                Không quảng cáo, học phù hợp với trình độ và không giới hạn số lần chinh phục Huyền thoại!
+              </p>
             </div>
-            <div className="w-24 h-24 bg-white/15 backdrop-blur-sm rounded-2xl flex items-center justify-center border border-white/20">
-              <Trophy className="w-14 h-14 text-yellow-300 drop-shadow-2xl" />
+
+            {/* Logo bird nằm bên phải */}
+            <div className="flex-shrink-0">
+              <img 
+                src={logo2} 
+                alt="App" 
+                className="w-32 h-32 object-contain"
+              />
             </div>
           </div>
-          <button className="w-full py-3.5 bg-white text-purple-600 font-bold rounded-2xl hover:bg-gray-100 transition-all shadow-xl hover:scale-105">
+
+          <button className="w-full py-4 bg-blue-600 text-white font-black rounded-2xl hover:bg-blue-700 transition-all text-base shadow-lg">
             THỬ 1 TUẦN MIỄN PHÍ
           </button>
         </div>
       </div>
 
       {/* LEADERBOARD LOCKED */}
-      <div className="mx-5 mt-5 p-6 bg-white rounded-3xl shadow-lg border border-gray-100">
-        <div className="flex items-center gap-4">
-          <div className="relative">
-            <div className="w-20 h-20 bg-gradient-to-br from-purple-100 to-pink-100 rounded-2xl flex items-center justify-center">
-              <Lock className="w-10 h-10 text-purple-600" strokeWidth={2.5} />
-            </div>
-            <div className="absolute -top-2 -right-2 w-8 h-8 bg-gradient-to-br from-red-500 to-pink-500 rounded-full flex items-center justify-center border-4 border-white shadow-lg">
-              <span className="text-white text-xs font-bold">9</span>
-            </div>
-          </div>
-          <div className="flex-1">
-            <h3 className="text-lg font-bold text-gray-900 mb-2">Bảng xếp hạng</h3>
-            <p className="text-sm text-gray-600 mb-3">
-              Hoàn thành <span className="font-bold text-purple-600">9 bài học</span> nữa để mở khóa
-            </p>
-            <div className="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden">
-              <div className="h-full bg-gradient-to-r from-purple-500 to-pink-500 rounded-full relative" style={{ width: '10%' }}>
-                <div className="absolute inset-0 bg-white/30 animate-shimmer"></div>
+      <div className="px-6 pb-5">
+        <div className="bg-white rounded-3xl border-2 border-gray-100 p-6 shadow-sm">
+          <div className="flex items-center gap-5">
+            <div className="flex-shrink-0">
+              <div className="w-20 h-20 bg-gray-50 rounded-3xl flex items-center justify-center">
+                <Lock className="w-10 h-10 text-gray-400" strokeWidth={2} />
               </div>
             </div>
-            <p className="text-xs text-gray-500 mt-2">1 / 10 bài học</p>
+            <div className="flex-1">
+              <h3 className="text-lg font-black text-gray-900 mb-2">
+                Mở khóa Bảng xếp hạng!
+              </h3>
+              <p className="text-sm text-gray-600 leading-snug">
+                Hoàn thành thêm 8 bài học để bắt đầu thi đua
+              </p>
+            </div>
           </div>
         </div>
       </div>
 
       {/* DAILY QUESTS */}
-      <div className="mx-5 mt-5 p-6 bg-white rounded-3xl shadow-lg border border-gray-100">
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center">
-              <Award className="w-6 h-6 text-white" />
-            </div>
-            <h3 className="text-xl font-bold text-gray-900">Nhiệm vụ hàng ngày</h3>
-          </div>
-          <button className="text-xs font-bold text-purple-600 hover:underline">
-            XEM TẤT CẢ
-          </button>
-        </div>
-
-        {/* Quest 1 */}
-        <div className="mb-4 p-5 bg-gradient-to-r from-amber-50 to-orange-50 rounded-2xl border-2 border-amber-200">
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center gap-4">
-              <div className="w-14 h-14 bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl flex items-center justify-center shadow-lg">
-                <Flame className="w-8 h-8 text-white" />
-              </div>
-              <div>
-                <p className="font-bold text-gray-900">Kiếm 10 KN</p>
-                <p className="text-xs text-gray-600">Kinh nghiệm hàng ngày</p>
-              </div>
-            </div>
-            <Gem className="w-12 h-12 text-orange-500 fill-orange-500" />
-          </div>
-          <div className="w-full bg-white/80 rounded-full h-3 overflow-hidden">
-            <div className="h-full bg-gradient-to-r from-amber-400 to-orange-500 rounded-full" style={{ width: '0%' }} />
-          </div>
-          <p className="text-center text-xs font-bold text-gray-700 mt-2">0 / 10 KN</p>
-        </div>
-
-        {/* Quest 2 */}
-        <div className="mb-4 p-5 bg-gradient-to-r from-emerald-50 to-teal-50 rounded-2xl border-2 border-emerald-200">
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center gap-4">
-              <div className="w-14 h-14 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-xl flex items-center justify-center shadow-lg">
-                <Target className="w-8 h-8 text-white" />
-              </div>
-              <div>
-                <p className="font-bold text-gray-900">Độ chính xác 90%</p>
-                <p className="text-xs text-gray-600">Hoàn thành 1 bài học</p>
-              </div>
-            </div>
-            <Gem className="w-12 h-12 text-emerald-500 fill-emerald-500" />
-          </div>
-          <div className="w-full bg-white/80 rounded-full h-3 overflow-hidden">
-            <div className="h-full bg-gradient-to-r from-emerald-400 to-teal-500 rounded-full" style={{ width: '0%' }} />
-          </div>
-          <p className="text-center text-xs font-bold text-gray-700 mt-2">0 / 1 bài học</p>
-        </div>
-
-        {/* Quest 3 - HỌC 10 PHÚT (ĐẸP NHƯ DUOLINGO) */}
-        <div className="p-5 bg-gradient-to-r from-sky-50 to-cyan-50 rounded-2xl border-2 border-sky-200">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-4">
-              <div className="relative w-14 h-14">
-                <div className="absolute inset-0 bg-gradient-to-br from-sky-400 to-cyan-500 rounded-xl shadow-lg"></div>
-                <div className="absolute inset-0.5 bg-white rounded-xl flex items-center justify-center">
-                  <Clock className="w-8 h-8 text-sky-600" />
-                </div>
-                <div className="absolute -inset-1 bg-sky-400/20 rounded-xl blur-xl animate-pulse"></div>
-              </div>
-              <div>
-                <p className="font-bold text-gray-900">Học 10 phút</p>
-                <p className="text-xs text-gray-600">Thời gian học hôm nay</p>
-              </div>
-            </div>
-            <Gem className="w-12 h-12 text-sky-500 fill-sky-500" />
+      <div className="px-6 pb-6">
+        <div className="bg-white rounded-3xl border-2 border-gray-100 p-6 shadow-sm">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-lg font-black text-gray-900">
+              Nhiệm vụ hàng ngày
+            </h3>
+            <button className="text-xs font-black text-blue-500 hover:underline tracking-wider">
+              XEM TẤT CẢ
+            </button>
           </div>
 
-          {/* Thanh tiến độ + đồng hồ */}
-          <div className="relative bg-white/80 rounded-full h-12 overflow-hidden shadow-inner">
-            <div 
-              className="absolute inset-0 bg-gradient-to-r from-sky-400 to-cyan-500 transition-all duration-1000 ease-out"
-              style={{ width: `${progress}%` }}
-            />
-            <div className="absolute inset-0 flex items-center justify-center">
-              <span className="text-2xl font-black text-sky-700 drop-shadow-lg">
-                {formatTime(secondsToday)}
-              </span>
+          {/* Quest 1 - Kiếm 10 KN */}
+          <div className="flex items-center gap-4">
+            <div className="flex-shrink-0">
+              <div className="w-16 h-16 bg-yellow-400 rounded-full flex items-center justify-center shadow-md">
+                <img src={fireIcon} alt="Fire" className="w-8 h-8" />
+              </div>
             </div>
-            <div className="absolute inset-0 bg-white/20 animate-shimmer"></div>
+            <div className="flex-1">
+              <h4 className="text-base font-black text-gray-900 mb-2">Kiếm 10 KN</h4>
+              {/* Progress bar */}
+              <div className="bg-gray-200 rounded-full h-3.5 overflow-hidden mb-1">
+                <div 
+                  className="h-full bg-gray-300 rounded-full transition-all"
+                  style={{ width: `${(dailyXP / 10) * 100}%` }}
+                />
+              </div>
+              <p className="text-xs text-gray-500 text-center font-bold">
+                {dailyXP} / 10
+              </p>
+            </div>
+            <div className="flex-shrink-0">
+              <div className="w-14 h-14 bg-orange-50 rounded-2xl flex items-center justify-center">
+                <span className="text-3xl">📦</span>
+              </div>
+            </div>
           </div>
-
-          <p className="text-center text-xs font-bold text-sky-600 mt-3">
-            Đã học {formatTime(secondsToday)} hôm nay
-          </p>
         </div>
       </div>
-
-      <div className="h-6" />
     </aside>
   );
 };

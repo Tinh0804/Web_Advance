@@ -1,7 +1,13 @@
-// src/pages/Practice.jsx
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import unitService from '../../services/unitService';
+
+// Import icons
+import animalIcon from '../../assets/icons/animal.png';
+import familyIcon from '../../assets/icons/family.png';
+import greetingIcon from '../../assets/icons/greeting.png';
+import musicIcon from '../../assets/icons/music.png';
+import technologyIcon from '../../assets/icons/technology.png';
 
 class Practice extends React.Component {
   state = {
@@ -19,7 +25,6 @@ class Practice extends React.Component {
           if (a.courseId !== b.courseId) return a.courseId - b.courseId;
           return a.orderIndex - b.orderIndex;
         });
-
       this.setState({ units: learnedUnits, loading: false });
     } catch (error) {
       this.setState({
@@ -32,15 +37,19 @@ class Practice extends React.Component {
   getGroupedUnits = () => {
     const { units } = this.state;
     const grouped = {};
-
     units.forEach(unit => {
       if (!grouped[unit.courseId]) {
         grouped[unit.courseId] = { courseId: unit.courseId, units: [] };
       }
       grouped[unit.courseId].units.push(unit);
     });
-
     return Object.values(grouped);
+  };
+
+  // Random icon cho mỗi unit
+  getUnitIcon = (unit) => {
+    const icons = [greetingIcon, familyIcon, animalIcon, musicIcon, technologyIcon];
+    return icons[unit.unitId % icons.length];
   };
 
   render() {
@@ -68,7 +77,7 @@ class Practice extends React.Component {
             {error || 'Bạn chưa mở khóa unit nào'}
           </p>
           <button 
-            onClick={() => navigate('/courses')} // hoặc trang học chính
+            onClick={() => navigate('/courses')}
             className="bg-purple-600 text-white px-8 py-4 rounded-xl text-lg font-bold hover:bg-purple-700 transition"
           >
             Bắt đầu học ngay
@@ -83,7 +92,6 @@ class Practice extends React.Component {
           <h1 className="text-4xl font-bold text-center text-gray-800 mb-12">
             Choose your unit
           </h1>
-
           {groupedUnits.map(group => (
             <div key={group.courseId} className="mb-12 space-y-4">
               {group.units.map(unit => (
@@ -92,11 +100,15 @@ class Practice extends React.Component {
                   onClick={() => navigate(`/practice/unit/${unit.unitId}`)}
                   className="w-full bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 p-6 flex items-center gap-6 border-2 border-transparent hover:border-purple-300 text-left"
                 >
-                  <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center flex-shrink-0 border-2 border-dashed border-gray-300">
-                    <span className="text-3xl text-gray-400">Icon</span>
+                  <div className="w-16 h-16 bg-gradient-to-br from-purple-100 to-purple-200 rounded-full flex items-center justify-center flex-shrink-0 p-3">
+                    <img 
+                      src={this.getUnitIcon(unit)} 
+                      alt="unit icon"
+                      className="w-full h-full object-contain"
+                    />
                   </div>
                   <div className="flex-1">
-                    <h3 className="text-xl font-bold text-gray-800"> Unit {unit.unitId} </h3>
+                    <h3 className="text-xl font-bold text-gray-800">Unit {unit.unitId}</h3>
                     <p className="text-gray-600 text-lg mt-1">{unit.unitName}</p>
                   </div>
                 </button>
