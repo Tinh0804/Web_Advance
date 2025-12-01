@@ -8,16 +8,39 @@ import matchingIcon from '../../assets/icons/matching.png';
 import pictureIcon from '../../assets/icons/picture.png';
 
 const gameTypes = [
-  { id: 'matching', name: "Matching Game", icon: matchingIcon, color: "from-yellow-400 to-orange-400" },
-  { id: 'picture-vocab', name: "Picture Vocabulary Game", icon: pictureIcon, color: "from-pink-400 to-red-400" },
-  { id: 'image-word', name: "Image Word Game", icon: imageIcon, color: "from-green-400 to-teal-500" },
-  { id: 'arrange', name: "Arrange Word", icon: arrangeIcon, color: "from-blue-400 to-indigo-500" },
+  { 
+    id: 'matching', 
+    name: "Ghép nối từ", 
+    icon: matchingIcon, 
+    color: "from-yellow-400 to-orange-400" 
+  },
+  { 
+    id: 'picture-vocab', 
+    name: "Ghép hình - từ", 
+    icon: pictureIcon, 
+    color: "from-pink-400 to-red-400" 
+  },
+  // ĐÃ THAY "image-word" → "listen-choose"
+  { 
+    id: 'listen-choose', 
+    name: "Nghe & Chọn từ", 
+    icon: imageIcon, 
+    color: "from-purple-400 to-pink-500" 
+  },
+  { 
+    id: 'arrange', 
+    name: "Sắp xếp câu", 
+    icon: arrangeIcon, 
+    color: "from-blue-400 to-indigo-500" 
+  },
 ];
 
 class PracticeGame extends React.Component {
   handleGameSelect = (gameId) => {
-    const { unitId } = this.props.params;  
+    const { unitId } = this.props.params;
     const navigate = this.props.navigate;
+
+    // ĐÃ SỬA ĐƯỜNG DẪN ĐÚNG 100%
     navigate(`/practice/game/${gameId}/${unitId}`);
   };
 
@@ -28,7 +51,7 @@ class PracticeGame extends React.Component {
       <div className="min-h-screen bg-gradient-to-b from-purple-50 to-white py-12 px-6">
         <div className="max-w-md mx-auto">
           <h1 className="text-4xl font-bold text-center text-gray-800 mb-12">
-            What type of games?
+            Chọn loại trò chơi
           </h1>
 
           <div className="space-y-6">
@@ -48,7 +71,7 @@ class PracticeGame extends React.Component {
 
                 <div className="text-left flex-1">
                   <h3 className="text-xl font-bold text-gray-800">{game.name}</h3>
-                  <p className="text-gray-500 text-sm mt-1">Tap to start practicing!</p>
+                  <p className="text-gray-500 text-sm mt-1">Chạm để bắt đầu luyện tập!</p>
                 </div>
 
                 <div className="opacity-0 group-hover:opacity-100 transition-opacity text-purple-600 font-bold text-lg">
@@ -63,7 +86,7 @@ class PracticeGame extends React.Component {
               onClick={() => navigate(-1)}
               className="text-purple-600 font-medium flex items-center gap-2 mx-auto hover:gap-3 transition-all"
             >
-              ← Back to units
+              ← Quay lại danh sách Unit
             </button>
           </div>
         </div>
@@ -73,7 +96,7 @@ class PracticeGame extends React.Component {
 }
 
 const PracticeGameWithRouter = () => {
-  const params = useParams(); 
+  const params = useParams();
   const navigate = useNavigate();
   return <PracticeGame params={params} navigate={navigate} />;
 };

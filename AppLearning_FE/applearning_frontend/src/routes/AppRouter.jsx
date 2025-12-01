@@ -11,10 +11,12 @@ import ProtectedRoute from "./ProtectedRoute";
 // Pages
 import First from "../pages/First/First";
 import Friend from "../pages/Friend/Friend";
+
 import ArrangeWordGame from "../pages/Game/ArrangeWordGame";
-import ImageWordGame from "../pages/Game/ImageWordGame";
+import ListenChooseGame from "../pages/Game/ListenChooseGame";
 import MatchingGame from "../pages/Game/MatchingGame";
 import PictureVocabularyGame from "../pages/Game/PictureVocabularyGame";
+
 import LeaderBoards from "../pages/LeaderBoards/LeaderBoards";
 import Learn from "../pages/Learn/Learn";
 import GoogleLogin from "../pages/Login/GoogleLogin";
@@ -27,7 +29,6 @@ import Setting from "../pages/Setting/Setting";
 import VocabularyLearn from "../pages/VocabularyLearn/VocabularyLearn";
 
 const routesConfig = [
-  // ========== PUBLIC ROUTES ==========
   { 
     path: "/first", 
     element: <First />, 
@@ -57,6 +58,12 @@ const routesConfig = [
   { 
     path: "/learn", 
     element: <Learn />, 
+    layout: MainLayout, 
+    isProtected: true 
+  },
+  { 
+    path: "/practice/game/listen-choose/:unitId", 
+    element: <ListenChooseGame />, 
     layout: MainLayout, 
     isProtected: true 
   },
@@ -142,7 +149,6 @@ export default function AppRouter() {
   return (
     <Router>
       <Routes>
-        {/* Render routes từ config */}
         {routesConfig.map(({ path, element, layout: Layout, isProtected }) => (
           <Route
             key={path}
