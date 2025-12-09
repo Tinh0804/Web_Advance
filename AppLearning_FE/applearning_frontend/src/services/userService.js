@@ -5,7 +5,7 @@ const userService = {
   // Lấy thông tin profile
   getProfile: async () => {
     const response = await axiosInstance.get('/api/Profile/myInfo');
-    return response.data.data; 
+    return response.data; 
   },
 
   updateProfile: async (userData) => {

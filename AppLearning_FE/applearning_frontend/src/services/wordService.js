@@ -4,7 +4,7 @@ const wordService = {
   // Lấy danh sách từ vựng theo bài học
   getWordsByLessonId: async (lessonId) => {
     try {
-      const response = await axiosInstance.get(`/api/Words/user/lesson/${lessonId}`);
+      const response = await axiosInstance.get(`/api/Words/lesson/${lessonId}`);
 
       // Backend trả về: { status: true, data: [...], message: "..." }
       if (response.data.status && Array.isArray(response.data.data)) {

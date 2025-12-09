@@ -1,6 +1,9 @@
-
 // src/utils/constants.js
+
+// ============ BASE URL ============
 export const API_BASE_URL = 'http://192.168.99.121:5050'; 
+
+// ============ OAUTH CONFIGURATION ============
 export const OAUTH_CONFIG = {
   GOOGLE: {
     CLIENT_ID: '976124393303-rlu8pmavq33q5q0781jbglma8ntglmb7.apps.googleusercontent.com',
@@ -10,6 +13,8 @@ export const OAUTH_CONFIG = {
     SDK_VERSION: 'v18.0',
   },
 };
+
+// ============ ROUTES ============
 export const ROUTES = {
   // Public routes
   FIRST: '/first',
@@ -25,10 +30,22 @@ export const ROUTES = {
   PROFILE: '/profile',
   VOCABULARYLEARN: '/vocabularylearn',
   SETTING: '/setting',
+  
   // Admin routes
   ADMIN: '/admin',
+  ADMIN_DASHBOARD_HOME: '/admin/', 
+  ADMIN_ANALYTICS: '/admin/analytics',
+  ADMIN_COURSE_MANAGEMENT: '/admin/course-management',
+  ADMIN_LESSON_MANAGEMENT: '/admin/lesson-management',
+  ADMIN_USER_MANAGEMENT: '/admin/user-management',
+  ADMIN_SETTINGS: '/admin/settings',
+  ADMIN_PROFILE: '/admin/profile',
+  ADMIN_CALENDAR: '/admin/calendar',
+  ADMIN_BLANK: '/admin/blank',
+  ADMIN_FORM: '/admin/form',
 };
 
+// ============ API ENDPOINTS ============
 export const API_ENDPOINTS = {
   // Auth endpoints
   AUTH: {
@@ -44,7 +61,6 @@ export const API_ENDPOINTS = {
     UPDATE_PROFILE: '/api/User/update-profile',
   },
   
-  // Add more endpoints as needed
 };
 
 export const STORAGE_KEYS = {
@@ -53,7 +69,6 @@ export const STORAGE_KEYS = {
   USER: 'user',
 };
 
-// ============ HTTP STATUS CODES ============
 export const HTTP_STATUS = {
   OK: 200,
   CREATED: 201,
@@ -66,6 +81,7 @@ export const HTTP_STATUS = {
 
 export default {
   API_BASE_URL,
+  OAUTH_CONFIG, 
   ROUTES,
   API_ENDPOINTS,
   STORAGE_KEYS,

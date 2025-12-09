@@ -1,11 +1,12 @@
 // src/services/authService.js
+import { API_ENDPOINTS, STORAGE_KEYS } from '../utils/constants';
 import axiosInstance from './axiosConfig';
 
 const authService = {
   // === REGISTER ===
   async register(userData) {
     try {
-      const response = await axiosInstance.post('/api/Auth/register', userData);
+      const response = await axiosInstance.post(API_ENDPOINTS.AUTH.REGISTER, userData);
       return response.data;
     } catch (error) {
       throw new Error(_handleError(error, 'Registration failed'));
@@ -15,21 +16,25 @@ const authService = {
   // === LOGIN ===
   async login(username, password) {
     try {
-      const response = await axiosInstance.post('/api/Auth/login', {
+      const response = await axiosInstance.post(API_ENDPOINTS.AUTH.LOGIN, {
         username,
         password,
       });
 
-      const { data } = response.data; // API trả về { status: true, data: { ... } }
+      const { data } = response.data;
 
       if (data?.token) {
-        localStorage.setItem('token', data.token);
+        localStorage.setItem(STORAGE_KEYS.TOKEN, data.token);
       }
       if (data?.refreshToken) {
-        localStorage.setItem('refreshToken', data.refreshToken);
+        localStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, data.refreshToken);
       }
       if (data?.user) {
-        localStorage.setItem('user', JSON.stringify(data.user));
+        const userToStore = {
+          ...data.user,
+          role: data.role 
+        };
+        localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(userToStore));
       }
 
       return response.data;
@@ -39,7 +44,7 @@ const authService = {
     }
   },
 
-  // === EXTERNAL LOGIN (Google, Facebook) ===
+  // === EXTERNAL LOGIN (Google / Facebook) ===
   async externalLogin(provider, accessToken) {
     try {
       const response = await axiosInstance.post('/api/Auth/external-login', {
@@ -47,18 +52,26 @@ const authService = {
         accessToken,
       });
 
-      const { token, refreshToken, user } = response.data;
+      // correct structure: data inside response.data.data
+      const result = response.data.data;
 
-      if (token) localStorage.setItem('token', token);
-      if (refreshToken) localStorage.setItem('refreshToken', refreshToken);
-      if (user) localStorage.setItem('user', JSON.stringify(user));
+      if (result?.token) {
+        localStorage.setItem(STORAGE_KEYS.TOKEN, result.token);
+      }
+      if (result?.refreshToken) {
+        localStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, result.refreshToken);
+      }
+      if (result?.user) {
+        localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(result.user));
+      }
 
       return response.data;
     } catch (error) {
-      const message = error.response?.data?.message
-        || error.response?.data?.Message
-        || error.message
-        || `${provider} login failed`;
+      const message =
+        error.response?.data?.message ||
+        error.response?.data?.Message ||
+        error.message ||
+        `${provider} login failed`;
 
       throw new Error(message);
     }
@@ -66,9 +79,9 @@ const authService = {
 
   // === LOGOUT ===
   logout() {
-    localStorage.removeItem('token');
-    localStorage.removeItem('refreshToken');
-    localStorage.removeItem('user');
+    localStorage.removeItem(STORAGE_KEYS.TOKEN);
+    localStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN);
+    localStorage.removeItem(STORAGE_KEYS.USER);
 
     if (typeof window !== 'undefined') {
       window.location.href = '/login';
@@ -78,8 +91,8 @@ const authService = {
   // === GET CURRENT USER ===
   getCurrentUser() {
     try {
-      const userStr = localStorage.getItem('user');
-      return userStr ? JSON.parse(userStr) : null;
+      const str = localStorage.getItem(STORAGE_KEYS.USER);
+      return str ? JSON.parse(str) : null;
     } catch {
       return null;
     }
@@ -87,7 +100,7 @@ const authService = {
 
   // === GET TOKEN ===
   getToken() {
-    return localStorage.getItem('token');
+    return localStorage.getItem(STORAGE_KEYS.TOKEN);
   },
 
   // === CHECK AUTH ===
@@ -96,11 +109,11 @@ const authService = {
   },
 };
 
-// === PRIVATE: Unified error handler ===
+// === PRIVATE ERROR HANDLER ===
 const _handleError = (error, defaultMsg) => {
   if (error.response?.data) {
-    const data = error.response.data;
-    return data.message || data.Message || data.error || defaultMsg;
+    const d = error.response.data;
+    return d.message || d.Message || d.error || defaultMsg;
   }
   if (error.request) {
     return 'Cannot connect to server. Please check your internet connection.';
